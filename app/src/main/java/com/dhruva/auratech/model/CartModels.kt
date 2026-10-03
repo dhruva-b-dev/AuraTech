@@ -17,5 +17,5 @@ data class CartItem(
     val isTagPrimary: Boolean = false,
     val originalPrice: Double,
     val currentPrice: Double,
-    val quantity: Int = 1
+    val quantity: Int = 1,
 )

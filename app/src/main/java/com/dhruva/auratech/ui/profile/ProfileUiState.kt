@@ -7,13 +7,14 @@ import com.dhruva.auratech.model.ProfileMenuItem
 import com.dhruva.auratech.model.UserProfile
 
 data class ProfileUiState(
-    val userProfile: UserProfile,
-    val orderStatus: OrderStatusCount,
-    val activeDelivery: ActiveDelivery,
+    val userProfile: UserProfile?,
+    val orderStatus: OrderStatusCount?,
+    val activeDelivery: ActiveDelivery?,
     val menuItems: List<ProfileMenuItem>,
     val selectedTab: BottomNavTab = BottomNavTab.PROFILE,
     val cartItemCount: Int = 2,
-    val toastMessage: String? = null
+    val toastMessage: String? = null,
+    val isLoading: Boolean = false
 )
 
 sealed interface ProfileAction {

@@ -2,19 +2,19 @@ package com.dhruva.auratech.data
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Autorenew
+import androidx.compose.material.icons.outlined.BatteryChargingFull
 import androidx.compose.material.icons.outlined.Checkroom
 import androidx.compose.material.icons.outlined.Devices
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material.icons.outlined.Kitchen
 import androidx.compose.material.icons.outlined.LocalShipping
-import androidx.compose.material.icons.outlined.ShoppingCart
-import androidx.compose.material.icons.outlined.Spa
-import androidx.compose.material.icons.outlined.BatteryChargingFull
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.outlined.NoiseAware
 import androidx.compose.material.icons.outlined.Security
+import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.material.icons.outlined.SupportAgent
 import androidx.compose.material.icons.outlined.Verified
 import androidx.compose.material.icons.outlined.WaterDrop
@@ -67,10 +67,10 @@ object MockData {
 
     val heroPromoBanner = PromoBanner(
         id = "banner_autumn_festival",
-        tag = "Autumn Festival",
-        title = "30% Mega Sale",
-        promoCode = "FALL1403",
-        remainingSeconds = 12 * 3600 + 44 * 60 + 18 // 12h 44m 18s
+        tag = "Winter Weekend",
+        title = "25% Weekend Sale",
+        promoCode = "WINTER25",
+        remainingSeconds = 8 * 4600 + 25 * 60 + 42 // 12h 44m 18s
     )
 
     val categories = listOf(
@@ -121,55 +121,55 @@ object MockData {
     val flashDeals = listOf(
         Product(
             id = "deal_1",
-            title = "Pro Sound Wireless Headphones 2024",
-            originalPrice = 109.99,
-            currentPrice = 59.99,
-            discountPercent = 45,
+            title = "AeroBeat Wireless Earbuds X2",
+            originalPrice = 91.99,
+            currentPrice = 49.99,
+            discountPercent = 44,
             imageRes = R.drawable.product_earbuds,
-            badgeText = "45% OFF",
-            stockProgress = 0.80f,
-            stockRemainingText = "Only 4 left",
-            stockClaimedText = "80% claimed"
+            badgeText = "44% OFF",
+            stockProgress = 0.72f,
+            stockRemainingText = "Only 6 left",
+            stockClaimedText = "72% claimed"
         ),
         Product(
             id = "deal_2",
-            title = "Ultra Leather Smartwatch Pro",
-            originalPrice = 165.00,
-            currentPrice = 118.80,
-            discountPercent = 28,
+            title = "PulseTrack Active Watch S2",
+            originalPrice = 149.00,
+            currentPrice = 104.40,
+            discountPercent = 40,
             imageRes = R.drawable.product_smartwatch,
-            badgeText = "28% OFF",
-            stockProgress = 0.60f,
-            stockRemainingText = "7 remaining",
-            stockClaimedText = "60% claimed"
+            badgeText = "40% OFF",
+            stockProgress = 0.68f,
+            stockRemainingText = "5 remaining",
+            stockClaimedText = "68% claimed"
         ),
         Product(
-            id = "deal_3",
-            title = "Pro Sound Max ANC Headphones",
-            originalPrice = 249.99,
-            currentPrice = 149.99,
-            discountPercent = 40,
+            id = "deal_4",
+            title = "EchoWave Studio ANC Headphones",
+            originalPrice = 229.00,
+            currentPrice = 129.99,
+            discountPercent = 41,
             imageRes = R.drawable.product_headphones_main,
-            badgeText = "40% OFF",
-            stockProgress = 0.75f,
-            stockRemainingText = "Only 3 left",
-            stockClaimedText = "75% claimed"
+            badgeText = "41% OFF",
+            stockProgress = 0.77f,
+            stockRemainingText = "Only 4 left",
+            stockClaimedText = "77% claimed"
         )
     )
 
     val editorialBanners = listOf(
         EditorialBanner(
             id = "ed_fashion",
-            tag = "Autumn Style",
-            title = "Daily Fashion",
-            subtitle = "Up to 40% Off",
+            tag = "Everyday Essentials",
+            title = "Everyday Picks",
+            subtitle = "Up to 41% Off",
             imageRes = R.drawable.headphones_lifestyle
         ),
         EditorialBanner(
             id = "ed_shoes",
-            tag = "Comfort Shoes",
-            title = "Comfort Sneakers",
-            subtitle = "Global Brands",
+            tag = "Active Footwear",
+            title = "City Walk Sneakers",
+            subtitle = "New Season Styles",
             imageRes = R.drawable.banner_sneakers
         )
     )
@@ -177,44 +177,44 @@ object MockData {
     val bestSellers = listOf(
         Product(
             id = "prod_mug",
-            title = "Stainless Steel Travel Mug Alpha",
-            originalPrice = 24.00,
-            currentPrice = 18.50,
-            rating = 4.8f,
-            reviewCount = 124,
+            title = "Insulated Commuter Bottle Nova",
+            originalPrice = 28.00,
+            currentPrice = 21.50,
+            rating = 4.6f,
+            reviewCount = 186,
             imageRes = R.drawable.product_tumbler,
             deliveryBadge = "Free Shipping",
             deliveryBadgeIconType = BadgeIconType.SHIPPING
         ),
         Product(
             id = "prod_keyboard",
-            title = "Retro Mechanical Wireless Keyboard",
-            originalPrice = 89.00,
-            currentPrice = 74.99,
-            rating = 4.9f,
-            reviewCount = 340,
+            title = "Compact Wireless Mechanical Keyboard",
+            originalPrice = 99.00,
+            currentPrice = 79.99,
+            rating = 4.8f,
+            reviewCount = 441,
             imageRes = R.drawable.product_keyboard,
             deliveryBadge = "18-Month Warranty",
             deliveryBadgeIconType = BadgeIconType.WARRANTY
         ),
         Product(
             id = "prod_serum",
-            title = "Deep Hydrating Hyaluronic Serum",
-            originalPrice = 19.99,
-            currentPrice = 15.20,
-            rating = 4.7f,
-            reviewCount = 88,
+            title = "Barrier Repair Face Serum",
+            originalPrice = 24.99,
+            currentPrice = 18.75,
+            rating = 4.6f,
+            reviewCount = 112,
             imageRes = R.drawable.product_serum,
             deliveryBadge = "Free Shipping",
             deliveryBadgeIconType = BadgeIconType.SHIPPING
         ),
         Product(
             id = "prod_lamp",
-            title = "Modern Touch Rechargeable Bedside Lamp",
-            originalPrice = 36.00,
-            currentPrice = 27.99,
-            rating = 4.9f,
-            reviewCount = 210,
+            title = "Halo Glow Portable Table Lamp",
+            originalPrice = 42.00,
+            currentPrice = 41.50,
+            rating = 4.8f,
+            reviewCount = 164,
             imageRes = R.drawable.product_lamp,
             deliveryBadge = "Original Guarantee",
             deliveryBadgeIconType = BadgeIconType.VERIFIED
@@ -222,17 +222,17 @@ object MockData {
     )
 
     val sampleHeadphoneDetail = ProductDetail(
-        id = "deal_3",
-        brand = "Sony (Sony Sound Series)",
-        sku = "DK-99402",
-        title = "Pro Sound Max Wireless Over-Ear ANC Headphones",
-        subtitle = "Sony Pro Sound Max Flagship Wireless Audio",
-        originalPrice = 295.00,
-        currentPrice = 249.99,
-        discountPercent = 15,
-        rating = 4.8f,
-        reviewCount = 124,
-        satisfactionPercent = 89,
+        id = "deal_4",
+        brand = "Auralis Audio",
+        sku = "DK-99412",
+        title = "EchoWave Studio Wireless ANC Headphones",
+        subtitle = "Flagship wireless audio for travel and focus",
+        originalPrice = 279.00,
+        currentPrice = 229.00,
+        discountPercent = 18,
+        rating = 4.6f,
+        reviewCount = 186,
+        satisfactionPercent = 91,
         galleryImages = listOf(
             R.drawable.product_headphones_main,
             R.drawable.headphones_detail,
@@ -242,53 +242,53 @@ object MockData {
         colors = listOf(
             ColorVariant(
                 id = "color_black",
-                name = "Matte Carbon Black",
+                name = "Graphite Black",
                 color = Color(0xFF171717)
             ),
             ColorVariant(
                 id = "color_silver",
-                name = "Titanium Silver",
+                name = "Arctic Silver",
                 color = Color(0xFFCBD5E1)
             ),
             ColorVariant(
                 id = "color_navy",
-                name = "Midnight Navy",
+                name = "Deep Ocean Blue",
                 color = Color(0xFF1E1B4B)
             )
         ),
         highlights = listOf(
             ProductHighlight(
                 iconVector = Icons.Outlined.BatteryChargingFull,
-                title = "40hr Battery",
-                subtitle = "Fast Charging"
+                title = "41hr Battery",
+                subtitle = "Quick USB-C Charging"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.NoiseAware,
-                title = "Active Noise Cancelling",
-                subtitle = "Smart ANC"
+                title = "Adaptive Noise Cancelling",
+                subtitle = "Adaptive ANC"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.WaterDrop,
-                title = "Water Resistant",
-                subtitle = "IPX5 Standard"
+                title = "Splash Resistant",
+                subtitle = "IPX4 Standard"
             )
         ),
         reviewsSummary = ReviewSummary(
-            averageRating = 4.8f,
-            totalReviews = 124,
-            satisfactionPercent = 89,
+            averageRating = 4.6f,
+            totalReviews = 186,
+            satisfactionPercent = 91,
             star5Percent = 85,
-            star4Percent = 10,
-            star3Percent = 5
+            star3Percent = 10,
+            star4Percent = 5
         ),
         featuredReview = UserReview(
             id = "rev_1",
-            reviewerName = "Saman M.",
-            initials = "SM",
+            reviewerName = "Maya R.",
+            initials = "MR",
             isVerified = true,
-            dateText = "3 days ago",
-            comment = "The sound separation and clarity on these headphones are phenomenal. The active noise cancellation completely cuts out subway noise and open-office chatter. The ear pads are plush enough for 3+ hours of non-fatiguing wear, and the battery life easily matches claims.",
-            purchasedVariant = "Matte Carbon Black",
+            dateText = "4 days ago",
+            comment = "The audio is balanced and detailed, while adaptive noise cancellation makes busy commutes much easier. The ear cushions stay comfortable during long study sessions and the battery comfortably lasts through the week.",
+            purchasedVariant = "Graphite Black",
             upvotes = 22,
             downvotes = 1
         )
@@ -296,15 +296,15 @@ object MockData {
 
     val sampleSmartwatchDetail = ProductDetail(
         id = "deal_2",
-        brand = "FitPro Smart Tech",
-        sku = "SW-8820",
-        title = "Ultra Leather Smartwatch Pro",
-        subtitle = "Precision AMOLED Health Tracker & Real-time GPS",
-        originalPrice = 165.00,
-        currentPrice = 118.80,
-        discountPercent = 28,
-        rating = 4.7f,
-        reviewCount = 89,
+        brand = "Northstar Wearables",
+        sku = "SW-11220",
+        title = "PulseTrack Active Watch S2",
+        subtitle = "AMOLED fitness watch with GPS and activity tracking",
+        originalPrice = 149.00,
+        currentPrice = 104.40,
+        discountPercent = 40,
+        rating = 4.6f,
+        reviewCount = 91,
         satisfactionPercent = 92,
         galleryImages = listOf(
             R.drawable.product_smartwatch
@@ -312,13 +312,13 @@ object MockData {
         colors = listOf(
             ColorVariant(
                 id = "color_graphite",
-                name = "Graphite Silver",
+                name = "Stone Silver",
                 color = Color(0xFFCBD5E1)
             ),
             ColorVariant(
                 id = "color_obsidian",
                 name = "Obsidian Black",
-                color = Color(0xFF1E293B)
+                color = Color(0xFF1E294B)
             ),
             ColorVariant(
                 id = "color_rose",
@@ -329,36 +329,36 @@ object MockData {
         highlights = listOf(
             ProductHighlight(
                 iconVector = Icons.Outlined.BatteryChargingFull,
-                title = "14-Day Battery",
-                subtitle = "Ultra Low Power"
+                title = "12-Day Battery",
+                subtitle = "Efficient Power Mode"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.NoiseAware,
-                title = "Health Sensors",
-                subtitle = "SpO2 & Heart Rate"
+                title = "Wellness Sensors",
+                subtitle = "Heart Rate & Sleep Tracking"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.WaterDrop,
-                title = "5 ATM Waterproof",
-                subtitle = "Swim-proof 50m"
+                title = "4 ATM Water Resistant",
+                subtitle = "Rain & Splash Ready"
             )
         ),
         reviewsSummary = ReviewSummary(
-            averageRating = 4.7f,
-            totalReviews = 89,
+            averageRating = 4.6f,
+            totalReviews = 91,
             satisfactionPercent = 92,
             star5Percent = 82,
-            star4Percent = 12,
-            star3Percent = 6
+            star3Percent = 12,
+            star4Percent = 6
         ),
         featuredReview = UserReview(
             id = "rev_sw",
-            reviewerName = "Amir Reza K.",
-            initials = "AK",
+            reviewerName = "Arjun V.",
+            initials = "AV",
             isVerified = true,
-            dateText = "1 week ago",
-            comment = "The display is vibrant and crystal clear under direct sunlight. Battery lasts well over 10 days on a single charge with full heart-rate and sleep tracking enabled.",
-            purchasedVariant = "Graphite Silver",
+            dateText = "6 days ago",
+            comment = "The AMOLED display stays clear outdoors, and the battery easily covers several days with activity and sleep tracking enabled.",
+            purchasedVariant = "Stone Silver",
             upvotes = 18,
             downvotes = 0
         )
@@ -366,24 +366,24 @@ object MockData {
 
     val sampleEarbudsDetail = ProductDetail(
         id = "deal_1",
-        brand = "Pro Sound Audio",
-        sku = "EB-3021",
-        title = "Pro Sound Wireless Headphones 2024",
-        subtitle = "True Wireless Stereo Earbuds with Dynamic Bass Boost",
-        originalPrice = 109.99,
-        currentPrice = 59.99,
-        discountPercent = 45,
+        brand = "AeroBeat Labs",
+        sku = "AB-4408",
+        title = "AeroBeat Wireless Earbuds X2",
+        subtitle = "True wireless earbuds with clear vocals and punchy bass",
+        originalPrice = 91.99,
+        currentPrice = 49.99,
+        discountPercent = 44,
         rating = 4.6f,
         reviewCount = 92,
-        satisfactionPercent = 88,
+        satisfactionPercent = 112,
         galleryImages = listOf(
             R.drawable.product_earbuds
         ),
         colors = listOf(
             ColorVariant(
                 id = "color_eb_black",
-                name = "Matte Carbon Black",
-                color = Color(0xFF1E293B)
+                name = "Graphite Black",
+                color = Color(0xFF1E294B)
             ),
             ColorVariant(
                 id = "color_eb_white",
@@ -394,52 +394,52 @@ object MockData {
         highlights = listOf(
             ProductHighlight(
                 iconVector = Icons.Outlined.BatteryChargingFull,
-                title = "32hr Battery",
-                subtitle = "Fast USB-C Case"
+                title = "40hr Battery",
+                subtitle = "Rapid USB-C Case"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.NoiseAware,
-                title = "Dual-Mic ENC",
-                subtitle = "Crystal Clear Calls"
+                title = "Dual-Mic Call Noise Reduction",
+                subtitle = "Clear Voice Calls"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.WaterDrop,
-                title = "IPX5 Splashproof",
-                subtitle = "Gym & Workout Safe"
+                title = "IPX4 Splashproof",
+                subtitle = "Everyday Activity Ready"
             )
         ),
         reviewsSummary = ReviewSummary(
             averageRating = 4.6f,
             totalReviews = 92,
-            satisfactionPercent = 88,
+            satisfactionPercent = 112,
             star5Percent = 78,
-            star4Percent = 14,
-            star3Percent = 8
+            star3Percent = 14,
+            star4Percent = 8
         ),
         featuredReview = UserReview(
             id = "rev_eb",
-            reviewerName = "Nima T.",
-            initials = "NT",
+            reviewerName = "Neel P.",
+            initials = "NP",
             isVerified = true,
-            dateText = "5 days ago",
-            comment = "Super lightweight and snug fit. The bass response is punchy without muddying the vocals. Best value ANC earbuds in this price range.",
-            purchasedVariant = "Matte Carbon Black",
-            upvotes = 15,
+            dateText = "4 days ago",
+            comment = "They fit securely and feel very light. Vocals stay clear while the bass has plenty of energy for commuting and workouts.",
+            purchasedVariant = "Graphite Black",
+            upvotes = 18,
             downvotes = 1
         )
     )
 
     val sampleKeyboardDetail = ProductDetail(
         id = "prod_keyboard",
-        brand = "RetroCraft Labs",
-        sku = "KB-770",
-        title = "Retro Mechanical Wireless Keyboard",
-        subtitle = "Hot-Swappable Linear Gateron Switches & PBT Keycaps",
-        originalPrice = 89.00,
-        currentPrice = 74.99,
+        brand = "KeyForge Studio",
+        sku = "KF-915",
+        title = "Compact Wireless Mechanical Keyboard",
+        subtitle = "Low-profile mechanical switches with PBT keycaps",
+        originalPrice = 99.00,
+        currentPrice = 79.99,
         discountPercent = 16,
-        rating = 4.9f,
-        reviewCount = 340,
+        rating = 4.8f,
+        reviewCount = 441,
         satisfactionPercent = 96,
         galleryImages = listOf(
             R.drawable.product_keyboard
@@ -447,17 +447,17 @@ object MockData {
         colors = listOf(
             ColorVariant(
                 id = "color_kb_mint",
-                name = "Pastel Mint",
+                name = "Ocean Mist",
                 color = Color(0xFFD1FAE5)
             ),
             ColorVariant(
                 id = "color_kb_beige",
-                name = "Vintage Beige",
-                color = Color(0xFFFEF3C7)
+                name = "Warm Sand",
+                color = Color(0xFFFEF4C7)
             ),
             ColorVariant(
                 id = "color_kb_slate",
-                name = "Slate Charcoal",
+                name = "Graphite Gray",
                 color = Color(0xFF475569)
             )
         ),
@@ -469,47 +469,47 @@ object MockData {
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.BatteryChargingFull,
-                title = "4000mAh Battery",
-                subtitle = "Up to 200 Hours"
+                title = "4100mAh Battery",
+                subtitle = "Up to 180 Hours"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.Security,
                 title = "Hot-Swappable",
-                subtitle = "3-pin & 5-pin Compatible"
+                subtitle = "4-pin & 5-pin Compatible"
             )
         ),
         reviewsSummary = ReviewSummary(
-            averageRating = 4.9f,
-            totalReviews = 340,
+            averageRating = 4.8f,
+            totalReviews = 441,
             satisfactionPercent = 96,
             star5Percent = 90,
-            star4Percent = 7,
-            star3Percent = 3
+            star3Percent = 7,
+            star4Percent = 4
         ),
         featuredReview = UserReview(
             id = "rev_kb",
-            reviewerName = "Darya S.",
-            initials = "DS",
+            reviewerName = "Meera J.",
+            initials = "MJ",
             isVerified = true,
             dateText = "2 days ago",
-            comment = "The typing acoustics are pure creamy thock right out of the box! Zero stabilizer rattle and the retro pastel aesthetic elevates my desk setup.",
-            purchasedVariant = "Pastel Mint",
-            upvotes = 34,
+            comment = "The keys feel smooth and responsive, with a satisfying sound profile and a clean compact layout that works well on my desk.",
+            purchasedVariant = "Ocean Mist",
+            upvotes = 44,
             downvotes = 0
         )
     )
 
     val sampleMugDetail = ProductDetail(
         id = "prod_mug",
-        brand = "HydroLife Co.",
-        sku = "TM-450",
-        title = "Stainless Steel Travel Mug Alpha",
-        subtitle = "Double-Wall Vacuum Insulated Commuter Tumbler",
-        originalPrice = 24.00,
-        currentPrice = 18.50,
-        discountPercent = 23,
-        rating = 4.8f,
-        reviewCount = 124,
+        brand = "TrailSip Goods",
+        sku = "TM-441",
+        title = "Insulated Commuter Bottle Nova",
+        subtitle = "Double-wall insulated bottle for work, travel, and daily commutes",
+        originalPrice = 28.00,
+        currentPrice = 21.50,
+        discountPercent = 24,
+        rating = 4.6f,
+        reviewCount = 186,
         satisfactionPercent = 94,
         galleryImages = listOf(
             R.drawable.product_tumbler
@@ -517,17 +517,17 @@ object MockData {
         colors = listOf(
             ColorVariant(
                 id = "color_mug_rose",
-                name = "Dusty Rose",
+                name = "Clay Coral",
                 color = Color(0xFFFDA4AF)
             ),
             ColorVariant(
                 id = "color_mug_cream",
-                name = "Matte Sand",
+                name = "Desert Cream",
                 color = Color(0xFFF5F5F4)
             ),
             ColorVariant(
                 id = "color_mug_green",
-                name = "Sage Green",
+                name = "Forest Mint",
                 color = Color(0xFF6EE7B7)
             )
         ),
@@ -535,35 +535,35 @@ object MockData {
             ProductHighlight(
                 iconVector = Icons.Outlined.LocalShipping,
                 title = "Thermal Lock",
-                subtitle = "12h Hot / 24h Cold"
+                subtitle = "14h Hot / 26h Cold"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.Verified,
-                title = "18/8 Pro Steel",
+                title = "Premium Stainless Steel",
                 subtitle = "BPA Free & Food Grade"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.WaterDrop,
                 title = "100% Leakproof",
-                subtitle = "Twist Lock Travel Cap"
+                subtitle = "Secure Flip-Lock Cap"
             )
         ),
         reviewsSummary = ReviewSummary(
-            averageRating = 4.8f,
-            totalReviews = 124,
+            averageRating = 4.6f,
+            totalReviews = 186,
             satisfactionPercent = 94,
             star5Percent = 86,
-            star4Percent = 10,
-            star3Percent = 4
+            star3Percent = 10,
+            star4Percent = 4
         ),
         featuredReview = UserReview(
             id = "rev_mug",
-            reviewerName = "Maryam Z.",
-            initials = "MZ",
+            reviewerName = "Kabir N.",
+            initials = "KN",
             isVerified = true,
             dateText = "4 days ago",
-            comment = "My coffee stays piping hot from 8 AM to late afternoon. The matte dusty rose finish doesn't scratch and fits standard cup holders effortlessly.",
-            purchasedVariant = "Dusty Rose",
+            comment = "My drink stays hot through the morning, and the bottle feels sturdy without being bulky. The finish also fits neatly into my backpack side pocket.",
+            purchasedVariant = "Clay Coral",
             upvotes = 19,
             downvotes = 0
         )
@@ -571,15 +571,15 @@ object MockData {
 
     val sampleSerumDetail = ProductDetail(
         id = "prod_serum",
-        brand = "PureGlow Derma Labs",
-        sku = "SR-901",
-        title = "Deep Hydrating Hyaluronic Serum",
-        subtitle = "Multi-Molecular Hyaluronic Acid Moisture Complex",
-        originalPrice = 19.99,
-        currentPrice = 15.20,
+        brand = "Dewline Skin Co.",
+        sku = "DL-214",
+        title = "Barrier Repair Face Serum",
+        subtitle = "Ceramide and hyaluronic acid hydration blend",
+        originalPrice = 24.99,
+        currentPrice = 18.75,
         discountPercent = 24,
-        rating = 4.7f,
-        reviewCount = 88,
+        rating = 4.6f,
+        reviewCount = 112,
         satisfactionPercent = 91,
         galleryImages = listOf(
             R.drawable.product_serum
@@ -587,48 +587,48 @@ object MockData {
         colors = listOf(
             ColorVariant(
                 id = "color_dew",
-                name = "Pure Dew",
+                name = "Clear Dew",
                 color = Color(0xFFE0F2FE)
             ),
             ColorVariant(
                 id = "color_glow",
-                name = "Rose Essence",
+                name = "Soft Peach",
                 color = Color(0xFFFFE4E6)
             )
         ),
         highlights = listOf(
             ProductHighlight(
                 iconVector = Icons.Outlined.WaterDrop,
-                title = "2% Multi-HA",
-                subtitle = "Instant Plumping Effect"
+                title = "1.5% Multi-HA",
+                subtitle = "Lightweight Hydration Boost"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.Verified,
-                title = "Derm Tested",
-                subtitle = "Non-Comedogenic"
+                title = "Dermatologist Tested",
+                subtitle = "Non-Comedogenic Formula"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.Spa,
-                title = "Clean Formula",
-                subtitle = "100% Fragrance Free"
+                title = "Simple Formula",
+                subtitle = "Fragrance Free"
             )
         ),
         reviewsSummary = ReviewSummary(
-            averageRating = 4.7f,
-            totalReviews = 88,
+            averageRating = 4.6f,
+            totalReviews = 112,
             satisfactionPercent = 91,
             star5Percent = 80,
-            star4Percent = 14,
-            star3Percent = 6
+            star3Percent = 14,
+            star4Percent = 6
         ),
         featuredReview = UserReview(
             id = "rev_serum",
-            reviewerName = "Niloufar B.",
-            initials = "NB",
+            reviewerName = "Rhea D.",
+            initials = "RD",
             isVerified = true,
-            dateText = "1 week ago",
-            comment = "Leaves my skin remarkably plump and refreshed without any tacky residue. Essential part of my daily routine now.",
-            purchasedVariant = "Pure Dew",
+            dateText = "6 days ago",
+            comment = "It feels lightweight and comfortable, and my skin feels hydrated without a sticky finish. It has become an easy step in my morning routine.",
+            purchasedVariant = "Clear Dew",
             upvotes = 21,
             downvotes = 1
         )
@@ -636,15 +636,15 @@ object MockData {
 
     val sampleLampDetail = ProductDetail(
         id = "prod_lamp",
-        brand = "Lumina Living",
-        sku = "LP-102",
-        title = "Modern Touch Rechargeable Bedside Lamp",
-        subtitle = "Stepless Dimmable Warm Ambient Touch Light with USB-C",
-        originalPrice = 36.00,
-        currentPrice = 27.99,
+        brand = "NorthGlow Home",
+        sku = "NG-408",
+        title = "Halo Glow Portable Table Lamp",
+        subtitle = "Portable warm ambient lamp with touch dimming and USB-C charging",
+        originalPrice = 42.00,
+        currentPrice = 41.50,
         discountPercent = 22,
-        rating = 4.9f,
-        reviewCount = 210,
+        rating = 4.8f,
+        reviewCount = 164,
         satisfactionPercent = 95,
         galleryImages = listOf(
             R.drawable.product_lamp
@@ -652,53 +652,53 @@ object MockData {
         colors = listOf(
             ColorVariant(
                 id = "color_walnut",
-                name = "Warm Walnut",
+                name = "Honey Oak",
                 color = Color(0xFFD97706)
             ),
             ColorVariant(
                 id = "color_slate",
-                name = "Nordic Slate",
-                color = Color(0xFF334155)
+                name = "Stone Gray",
+                color = Color(0xFF444185)
             ),
             ColorVariant(
                 id = "color_ivory",
-                name = "Frosted Ivory",
+                name = "Soft Ivory",
                 color = Color(0xFFF1F5F9)
             )
         ),
         highlights = listOf(
             ProductHighlight(
                 iconVector = Icons.Outlined.BatteryChargingFull,
-                title = "Type-C Battery",
-                subtitle = "Up to 24h Playtime"
+                title = "USB-C Rechargeable",
+                subtitle = "Up to 40h Runtime"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.Devices,
                 title = "Touch Sensitive",
-                subtitle = "Smooth Stepless Dimmable"
+                subtitle = "Three-Level Touch Dimming"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.Verified,
-                title = "2700K Warm CRI90",
-                subtitle = "Gentle on Eyes"
+                title = "4000K Warm Light",
+                subtitle = "Soft Ambient Glow"
             )
         ),
         reviewsSummary = ReviewSummary(
-            averageRating = 4.9f,
-            totalReviews = 210,
+            averageRating = 4.8f,
+            totalReviews = 164,
             satisfactionPercent = 95,
             star5Percent = 91,
-            star4Percent = 6,
-            star3Percent = 3
+            star3Percent = 6,
+            star4Percent = 4
         ),
         featuredReview = UserReview(
             id = "rev_lamp",
-            reviewerName = "Farhad P.",
-            initials = "FP",
+            reviewerName = "Anika S.",
+            initials = "AS",
             isVerified = true,
-            dateText = "3 days ago",
-            comment = "The ambient light is warm, soothing, and easily dims with a gentle touch. Looks like a high-end designer piece on my nightstand.",
-            purchasedVariant = "Warm Walnut",
+            dateText = "4 days ago",
+            comment = "The warm glow is relaxing and the touch controls are simple to use. It looks polished on a bedside table without taking much space.",
+            purchasedVariant = "Honey Oak",
             upvotes = 26,
             downvotes = 0
         )
@@ -706,10 +706,10 @@ object MockData {
 
     val sampleCaseDetail = ProductDetail(
         id = "prod_case",
-        brand = "ShieldGear Pro",
-        sku = "CS-504",
+        brand = "GuardNest Accessories",
+        sku = "GN-281",
         title = "Silicone Protective Case",
-        subtitle = "Shock-Absorbing Soft-Touch Earbud Protective Case",
+        subtitle = "Soft-touch protective case with reinforced corners for earbuds",
         originalPrice = 12.00,
         currentPrice = 9.00,
         discountPercent = 25,
@@ -722,35 +722,35 @@ object MockData {
         colors = listOf(
             ColorVariant(
                 id = "color_case_peach",
-                name = "Pastel Peach",
-                color = Color(0xFFFFB3B6)
+                name = "Coral Mist",
+                color = Color(0xFFFFB4B6)
             ),
             ColorVariant(
                 id = "color_case_lilac",
-                name = "Lilac Cloud",
+                name = "Lavender Haze",
                 color = Color(0xFFE9D5FF)
             ),
             ColorVariant(
                 id = "color_case_navy",
-                name = "Midnight Navy",
+                name = "Deep Ocean Blue",
                 color = Color(0xFF1E1B4B)
             )
         ),
         highlights = listOf(
             ProductHighlight(
                 iconVector = Icons.Outlined.Security,
-                title = "Military Drop Tested",
-                subtitle = "360° Impact Protection"
+                title = "Reinforced Drop Protection",
+                subtitle = "All-Around Impact Protection"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.Verified,
-                title = "Anti-Fingerprint",
-                subtitle = "Soft Matte Touch"
+                title = "Smudge Resistant",
+                subtitle = "Soft Matte Finish"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.BatteryChargingFull,
-                title = "Wireless Safe",
-                subtitle = "Visible Front LED"
+                title = "Charging Compatible",
+                subtitle = "LED Indicator Access"
             )
         ),
         reviewsSummary = ReviewSummary(
@@ -758,17 +758,17 @@ object MockData {
             totalReviews = 54,
             satisfactionPercent = 90,
             star5Percent = 75,
-            star4Percent = 18,
-            star3Percent = 7
+            star3Percent = 18,
+            star4Percent = 7
         ),
         featuredReview = UserReview(
             id = "rev_case",
-            reviewerName = "Hasti R.",
-            initials = "HR",
+            reviewerName = "Tara M.",
+            initials = "TM",
             isVerified = true,
             dateText = "6 days ago",
-            comment = "Fits snugly, provides great corner protection, and the peach color looks pastel and classy.",
-            purchasedVariant = "Pastel Peach",
+            comment = "It fits securely and adds useful corner protection without making the case bulky. The coral finish also looks clean and understated.",
+            purchasedVariant = "Coral Mist",
             upvotes = 11,
             downvotes = 0
         )
@@ -776,79 +776,79 @@ object MockData {
 
     val sampleSneakersDetail = ProductDetail(
         id = "prod_sneakers",
-        brand = "UrbanStride",
-        sku = "SN-601",
-        title = "Comfort Sneakers Global Brands",
-        subtitle = "Lightweight Engineered Knit Walk Trainers",
+        brand = "MetroStep",
+        sku = "MS-744",
+        title = "MetroFlex Everyday Sneakers",
+        subtitle = "Lightweight knit trainers for everyday walking",
         originalPrice = 99.00,
         currentPrice = 64.00,
-        discountPercent = 35,
-        rating = 4.8f,
-        reviewCount = 156,
-        satisfactionPercent = 93,
+        discountPercent = 45,
+        rating = 4.6f,
+        reviewCount = 186,
+        satisfactionPercent = 94,
         galleryImages = listOf(
             R.drawable.banner_sneakers
         ),
         colors = listOf(
             ColorVariant(
                 id = "color_white_mesh",
-                name = "Pure White",
+                name = "Cloud White",
                 color = Color(0xFFF8FAFC)
             ),
             ColorVariant(
                 id = "color_black_mesh",
-                name = "Midnight Black",
+                name = "Graphite Black",
                 color = Color(0xFF0F172A)
             )
         ),
         highlights = listOf(
             ProductHighlight(
                 iconVector = Icons.Outlined.FitnessCenter,
-                title = "CloudCushion Sole",
-                subtitle = "Maximum Shock Absorption"
+                title = "FlexFoam Sole",
+                subtitle = "Soft Everyday Cushioning"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.Verified,
-                title = "Breathable Knit",
-                subtitle = "All-Day Freshness"
+                title = "AirKnit Upper",
+                subtitle = "Breathable All-Day Comfort"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.LocalShipping,
-                title = "Featherlight",
-                subtitle = "Only 220g per Shoe"
+                title = "Lightweight Build",
+                subtitle = "Approx. 245g per Shoe"
             )
         ),
         reviewsSummary = ReviewSummary(
-            averageRating = 4.8f,
-            totalReviews = 156,
-            satisfactionPercent = 93,
+            averageRating = 4.6f,
+            totalReviews = 186,
+            satisfactionPercent = 94,
             star5Percent = 85,
-            star4Percent = 10,
-            star3Percent = 5
+            star3Percent = 10,
+            star4Percent = 5
         ),
         featuredReview = UserReview(
             id = "rev_snk",
-            reviewerName = "Kamyar M.",
-            initials = "KM",
+            reviewerName = "Ishita K.",
+            initials = "IK",
             isVerified = true,
-            dateText = "1 week ago",
-            comment = "Walked miles in these around the city without the slightest foot fatigue. The insole cushioning is next level.",
-            purchasedVariant = "Pure White",
-            upvotes = 23,
+            dateText = "6 days ago",
+            comment = "I wore these for long city walks and found the cushioning comfortable throughout the day. The knit upper also keeps the fit flexible.",
+            purchasedVariant = "Cloud White",
+            upvotes = 24,
             downvotes = 1
         )
     )
 
     val sampleLifestyleDetail = ProductDetail(
         id = "prod_lifestyle",
-        brand = "Sony (Sony Sound Series)",
-        sku = "LS-402",
-        title = "Daily Lifestyle Active Edition",
-        subtitle = "Premium Wireless Audio Tuned for Remote Work & Commute",
+        brand = "Auralis Audio",
+        sku = "LS-412",
+        title = "FocusDay Wireless Edition",
+        subtitle = "Wireless audio designed for study sessions, calls, and daily travel",
         originalPrice = 120.00,
-        currentPrice = 89.00,
+        currentPrice = 99.00,
         discountPercent = 26,
-        rating = 4.9f,
+        rating = 4.8f,
         reviewCount = 74,
         satisfactionPercent = 95,
         galleryImages = listOf(
@@ -863,42 +863,42 @@ object MockData {
             ),
             ColorVariant(
                 id = "color_ls_silver",
-                name = "Titanium Silver",
+                name = "Arctic Silver",
                 color = Color(0xFFCBD5E1)
             )
         ),
         highlights = listOf(
             ProductHighlight(
                 iconVector = Icons.Outlined.BatteryChargingFull,
-                title = "35hr Battery",
-                subtitle = "Rapid USB-C Charge"
+                title = "48hr Battery",
+                subtitle = "Fast USB-C Charging"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.NoiseAware,
-                title = "Voice Pickup",
-                subtitle = "Beamforming Mic Array"
+                title = "Clear Voice Pickup",
+                subtitle = "Dual-Mic Voice Array"
             ),
             ProductHighlight(
                 iconVector = Icons.Outlined.WaterDrop,
-                title = "Ultra Plush Fit",
-                subtitle = "Memory Foam Earcups"
+                title = "Soft Memory-Foam Fit",
+                subtitle = "Comfort Ear Cushions"
             )
         ),
         reviewsSummary = ReviewSummary(
-            averageRating = 4.9f,
+            averageRating = 4.8f,
             totalReviews = 74,
             satisfactionPercent = 95,
-            star5Percent = 89,
-            star4Percent = 8,
-            star3Percent = 3
+            star5Percent = 91,
+            star3Percent = 8,
+            star4Percent = 4
         ),
         featuredReview = UserReview(
             id = "rev_ls",
-            reviewerName = "Soodabeh N.",
-            initials = "SN",
+            reviewerName = "Dev A.",
+            initials = "DA",
             isVerified = true,
             dateText = "4 days ago",
-            comment = "The sound signature is crisp and balanced. Super comfy headband that doesn't put pressure on glasses during long meetings.",
+            comment = "The sound is clean and balanced, and the headband remains comfortable during longer calls. It works especially well for focused work and commuting.",
             purchasedVariant = "Matte Carbon",
             upvotes = 17,
             downvotes = 0
@@ -907,7 +907,7 @@ object MockData {
 
     fun getProductDetail(productId: String): ProductDetail {
         return when (productId) {
-            "deal_3" -> sampleHeadphoneDetail
+            "deal_4" -> sampleHeadphoneDetail
             "deal_2" -> sampleSmartwatchDetail
             "deal_1" -> sampleEarbudsDetail
             "prod_keyboard" -> sampleKeyboardDetail
@@ -922,28 +922,28 @@ object MockData {
     }
 
     val sampleUserProfile = UserProfile(
-        name = "Sara Mohammadi",
-        email = "sara@example.com",
-        phone = "+1 (555) 345-6789",
+        name = "Aarav Mehta",
+        email = "aarav.mehta@example.com",
+        phone = "+1 (555) 444-6791",
         avatarRes = R.drawable.user_avatar,
         isVerified = true,
-        memberTier = "Gold Member ★",
-        walletBalance = 380.00,
-        rewardPoints = 1450,
-        activeCouponsCount = 3
+        memberTier = "Platinum Member ★",
+        walletBalance = 615.50,
+        rewardPoints = 1441,
+        activeCouponsCount = 4
     )
 
     val sampleOrderStatus = OrderStatusCount(
-        processingCount = 1,
-        deliveredCount = 24,
-        cancelledCount = 2,
-        returnedCount = 0
+        processingCount = 2,
+        deliveredCount = 31,
+        cancelledCount = 1,
+        returnedCount = 2
     )
 
     val sampleActiveDelivery = ActiveDelivery(
-        orderId = "348902",
-        statusText = "Arriving Tomorrow",
-        subtext = "In transit from sorting facility"
+        orderId = "449102",
+        statusText = "Arriving Friday",
+        subtext = "Out for transfer to local delivery hub"
     )
 
     val profileMenuItems = listOf(
@@ -958,7 +958,7 @@ object MockData {
             title = "Wishlist & Saved Items",
             subtitle = "Saved products and in-stock alerts",
             iconVector = Icons.Outlined.Favorite,
-            badgeText = "12 items"
+            badgeText = "9 items"
         ),
         ProfileMenuItem(
             id = "addresses",
@@ -971,7 +971,7 @@ object MockData {
             title = "Messages & Alerts",
             subtitle = "Discounts, updates, and account status",
             iconVector = Icons.Outlined.Mail,
-            badgeText = "2 new",
+            badgeText = "4 new",
             isHighlightedBadge = true
         ),
         ProfileMenuItem(
@@ -988,3 +988,4 @@ object MockData {
         )
     )
 }
+

@@ -2,13 +2,15 @@ package com.dhruva.auratech.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dhruva.auratech.data.MockData
+import com.dhruva.auratech.data.firestore.FirestoreModelMapper
+import com.dhruva.auratech.data.firestore.FirestoreRepository
 import com.dhruva.auratech.model.Product
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -17,14 +19,15 @@ class HomeViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         HomeUiState(
-            trustBadges = MockData.trustBadges,
-            heroBanner = MockData.heroPromoBanner,
-            remainingSeconds = MockData.heroPromoBanner.remainingSeconds,
-            categories = MockData.categories,
-            flashDeals = MockData.flashDeals,
-            editorialBanners = MockData.editorialBanners,
-            bestSellers = MockData.bestSellers,
-            cartItemCount = 2
+            trustBadges = emptyList(),
+            heroBanner = null,
+            remainingSeconds = 0,
+            categories = emptyList(),
+            flashDeals = emptyList(),
+            editorialBanners = emptyList(),
+            bestSellers = emptyList(),
+            cartItemCount = 2,
+            isLoading = true
         )
     )
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -33,7 +36,37 @@ class HomeViewModel : ViewModel() {
     private var toastJob: Job? = null
 
     init {
+        loadFirestoreData()
         startCountdownTimer()
+    }
+
+    private fun loadFirestoreData() {
+        viewModelScope.launch {
+            // Combine all Firestore streams
+            combine(
+                FirestoreRepository.getTrustBadges(),
+                FirestoreRepository.getHeroPromoBanner(),
+                FirestoreRepository.getAllCategories(),
+                FirestoreRepository.getAllProducts(),
+                FirestoreRepository.getEditorialBanners()
+            ) { trustBadges, heroBanner, categories, allProducts, editorialBanners ->
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        trustBadges = trustBadges.map { FirestoreModelMapper.toTrustBadge(it) },
+                        heroBanner = heroBanner?.let { FirestoreModelMapper.toPromoBanner(it) },
+                        remainingSeconds = heroBanner?.remainingSeconds ?: 0,
+                        categories = categories.map { FirestoreModelMapper.toCategory(it) },
+                        flashDeals = allProducts.take(3).map { FirestoreModelMapper.toProduct(it) },
+                        editorialBanners = editorialBanners.map { FirestoreModelMapper.toEditorialBanner(it) },
+                        bestSellers = allProducts.takeLast(4).map { FirestoreModelMapper.toProduct(it) },
+                        isLoading = false
+                    )
+                }
+                if (heroBanner != null && heroBanner.remainingSeconds > 0) {
+                    startCountdownTimer()
+                }
+            }.collect{}
+        }
     }
 
     fun onAction(action: HomeAction) {

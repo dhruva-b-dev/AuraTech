@@ -12,7 +12,8 @@ data class CartUiState(
     val isCouponError: Boolean = false,
     val isCheckingOut: Boolean = false,
     val selectedTab: BottomNavTab = BottomNavTab.CART,
-    val toastMessage: String? = null
+    val toastMessage: String? = null,
+    val isLoading: Boolean = false
 ) {
     val totalUniqueItems: Int
         get() = items.size

@@ -1,6 +1,7 @@
 package com.dhruva.auratech.ui.categories
 
-import android.content.res.Configuration
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,28 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.DeveloperBoard
-import androidx.compose.material.icons.filled.Gamepad
-import androidx.compose.material.icons.filled.Headset
-import androidx.compose.material.icons.filled.PhoneAndroid
-import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.dhruva.auratech.R
-import com.dhruva.auratech.model.CategoryCollection
-import com.dhruva.auratech.model.Product
-import com.dhruva.auratech.model.SubCategory
 import com.dhruva.auratech.ui.categories.components.CategoriesSearchBar
 import com.dhruva.auratech.ui.categories.components.CategoriesTopBar
 import com.dhruva.auratech.ui.categories.components.CategoryHeroPromoCard
@@ -42,6 +27,7 @@ import com.dhruva.auratech.ui.categories.components.CategoryVerticalRail
 import com.dhruva.auratech.ui.categories.components.SubcategoryChipsRow
 import com.dhruva.auratech.ui.home.components.CartFeedbackToast
 import com.dhruva.auratech.ui.home.components.StoreBottomNavBar
+import com.dhruva.auratech.ui.theme.AuraTechTheme
 import com.dhruva.auratech.ui.theme.DarkBackground
 
 @Composable
@@ -136,9 +122,27 @@ fun CategoriesScreen(
                                         rowProducts.forEach { product ->
                                             CategoryProductCard(
                                                 product = product,
-                                                onProductClick = { id -> onAction(CategoriesAction.OnProductClick(id)) },
-                                                onAddToCart = { prod -> onAction(CategoriesAction.OnAddToCart(prod)) },
-                                                onToggleFavorite = { id -> onAction(CategoriesAction.OnToggleFavorite(id)) },
+                                                onProductClick = { id ->
+                                                    onAction(
+                                                        CategoriesAction.OnProductClick(
+                                                            id
+                                                        )
+                                                    )
+                                                },
+                                                onAddToCart = { prod ->
+                                                    onAction(
+                                                        CategoriesAction.OnAddToCart(
+                                                            prod
+                                                        )
+                                                    )
+                                                },
+                                                onToggleFavorite = { id ->
+                                                    onAction(
+                                                        CategoriesAction.OnToggleFavorite(
+                                                            id
+                                                        )
+                                                    )
+                                                },
                                                 modifier = Modifier.weight(1f)
                                             )
                                         }
@@ -163,6 +167,7 @@ fun CategoriesScreen(
     }
 }
 
+/*
 @Composable
 fun CategoriesScreen(
     modifier: Modifier = Modifier,
@@ -334,9 +339,16 @@ fun CategoriesScreen(
         modifier = modifier
     )
 }
+*/
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@RequiresApi(Build.VERSION_CODES.S)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun CategoriesScreenPreview() {
-    CategoriesScreen()
+    AuraTechTheme {
+        CategoriesScreen(
+            uiState = CategoriesUiState(),
+            onAction = {}
+        )
+    }
 }

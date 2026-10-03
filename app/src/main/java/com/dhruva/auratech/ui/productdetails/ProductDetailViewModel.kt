@@ -2,7 +2,8 @@ package com.dhruva.auratech.ui.productdetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dhruva.auratech.data.MockData
+import com.dhruva.auratech.data.firestore.FirestoreModelMapper
+import com.dhruva.auratech.data.firestore.FirestoreRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,20 +18,41 @@ class ProductDetailViewModel(
 
     private val _uiState = MutableStateFlow(
         ProductDetailUiState(
-            productDetail = MockData.getProductDetail(productId),
+            productDetail = null,
             selectedGalleryIndex = 0,
             selectedColorIndex = 0,
             isFavorite = false,
             selectedWarrantyOption = 0,
             cartItemCount = 2,
-            reviewUpvotes = MockData.getProductDetail(productId).featuredReview.upvotes,
-            reviewDownvotes = MockData.getProductDetail(productId).featuredReview.downvotes
+            reviewUpvotes = 0,
+            reviewDownvotes = 0,
+            isLoading = true
         )
     )
     val uiState: StateFlow<ProductDetailUiState> = _uiState.asStateFlow()
 
     private var toastJob: Job? = null
     private var cartBtnJob: Job? = null
+
+    init {
+        loadProductDetail(productId)
+    }
+
+    private fun loadProductDetail(productId: String) {
+        viewModelScope.launch {
+            FirestoreRepository.getProductDetail(productId).collect { firestoreDetail ->
+                val productDetail = firestoreDetail?.let { FirestoreModelMapper.toProductDetail(it) }
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        productDetail = productDetail!!,
+                        reviewUpvotes = productDetail.featuredReview?.upvotes ?: 0,
+                        reviewDownvotes = productDetail?.featuredReview?.downvotes ?: 0,
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
 
     fun onAction(action: ProductDetailAction) {
         when (action) {

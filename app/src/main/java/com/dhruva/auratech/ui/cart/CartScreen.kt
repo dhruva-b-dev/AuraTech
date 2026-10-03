@@ -1,6 +1,7 @@
 package com.dhruva.auratech.ui.cart
 
-import android.content.res.Configuration
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,14 +13,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dhruva.auratech.R
@@ -34,6 +29,7 @@ import com.dhruva.auratech.ui.cart.components.PromoCouponSection
 import com.dhruva.auratech.ui.cart.components.StickyCheckoutActionBar
 import com.dhruva.auratech.ui.home.components.CartFeedbackToast
 import com.dhruva.auratech.ui.home.components.StoreBottomNavBar
+import com.dhruva.auratech.ui.theme.AuraTechTheme
 import com.dhruva.auratech.ui.theme.DarkBackground
 
 @Composable
@@ -151,123 +147,56 @@ fun CartScreen(
     }
 }
 
-@Composable
-fun CartScreen(
-    modifier: Modifier = Modifier,
-    onNavigateToProduct: (String) -> Unit = {},
-    onNavigateToHome: () -> Unit = {}
-) {
-    var items by remember {
-        mutableStateOf(
-            listOf(
-                CartItem(
-                    id = "item-1",
-                    productId = "p1",
-                    title = "AURA SoundMax Pro ANC",
-                    imageRes = R.drawable.user_avatar,
-                    colorName = "Matte Obsidian",
-                    colorHex = Color.Black,
-                    tagText = "ANC",
-                    isTagPrimary = true,
-                    originalPrice = 249.0,
-                    currentPrice = 239.0,
-                    quantity = 1
-                ),
-                CartItem(
-                    id = "item-2",
-                    productId = "p2",
-                    title = "AURA Pulse Chrono Smartwatch",
-                    imageRes = R.drawable.user_avatar,
-                    colorName = "Titanium Grey",
-                    colorHex = Color.Gray,
-                    tagText = "BESTSELLER",
-                    isTagPrimary = false,
-                    originalPrice = 269.0,
-                    currentPrice = 258.0,
-                    quantity = 2
-                ),
-                CartItem(
-                    id = "item-3",
-                    productId = "p3",
-                    title = "AURA MagArmor Case",
-                    imageRes = R.drawable.user_avatar,
-                    colorName = "Midnight Indigo",
-                    colorHex = Color.DarkGray,
-                    tagText = "MAGSAFE",
-                    isTagPrimary = true,
-                    originalPrice = 35.0,
-                    currentPrice = 29.0,
-                    quantity = 1
-                )
-            )
-        )
-    }
-
-    var couponInput by remember { mutableStateOf("") }
-    var appliedCoupon by remember { mutableStateOf<String?>(null) }
-    var couponDiscount by remember { mutableDoubleStateOf(0.0) }
-    var couponFeedback by remember { mutableStateOf<String?>(null) }
-    var isCouponError by remember { mutableStateOf(false) }
-    var toastMessage by remember { mutableStateOf<String?>(null) }
-
-    val uiState = CartUiState(
-        items = items,
-        couponInput = couponInput,
-        appliedCoupon = appliedCoupon,
-        couponDiscount = couponDiscount,
-        couponFeedback = couponFeedback,
-        isCouponError = isCouponError,
-        toastMessage = toastMessage
-    )
-
-    CartScreen(
-        uiState = uiState,
-        onAction = { action ->
-            when (action) {
-                is CartAction.OnQuantityChanged -> {
-                    items = items.mapNotNull { item ->
-                        if (item.id == action.itemId) {
-                            val newQty = item.quantity + action.delta
-                            if (newQty > 0) item.copy(quantity = newQty) else null
-                        } else item
-                    }
-                }
-                is CartAction.OnRemoveItem -> {
-                    items = items.filter { it.id != action.itemId }
-                    toastMessage = "Item removed from cart"
-                }
-                is CartAction.OnClearCart -> {
-                    items = emptyList()
-                    toastMessage = "Cart cleared"
-                }
-                is CartAction.OnCouponInputChanged -> {
-                    couponInput = action.code
-                }
-                is CartAction.OnApplyCoupon -> {
-                    if (couponInput.equals("AURA30", ignoreCase = true)) {
-                        appliedCoupon = "AURA30"
-                        couponDiscount = 20.0
-                        couponFeedback = "Coupon AURA30 applied! Saved $20.00"
-                        isCouponError = false
-                    } else {
-                        couponFeedback = "Invalid coupon code"
-                        isCouponError = true
-                    }
-                }
-                is CartAction.OnProceedToCheckout -> {
-                    toastMessage = "Proceeding to checkout..."
-                }
-                is CartAction.OnProductClick -> onNavigateToProduct(action.productId)
-                is CartAction.OnStartShoppingClick -> onNavigateToHome()
-                else -> {}
-            }
-        },
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@RequiresApi(Build.VERSION_CODES.S)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun CartScreenPreview() {
-    CartScreen()
+    AuraTechTheme() {
+        CartScreen(
+            uiState = CartUiState(
+                items = listOf(
+                    CartItem(
+                        id = "item-1",
+                        productId = "deal_3",
+                        title = "Pro Sound Wireless Headphones",
+                        imageRes = R.drawable.product_headphones_main,
+                        colorName = "Color: Matte Black",
+                        colorHex = androidx.compose.ui.graphics.Color(0xFF1E293B),
+                        tagText = "18-month warranty",
+                        isTagPrimary = false,
+                        originalPrice = 70.00,
+                        currentPrice = 59.00,
+                        quantity = 1
+                    ),
+                    CartItem(
+                        id = "item-2",
+                        productId = "deal_2",
+                        title = "Smart Watch Fit Pro",
+                        imageRes = R.drawable.product_smartwatch,
+                        colorName = "Strap: Graphite Silver",
+                        colorHex = androidx.compose.ui.graphics.Color(0xFFCBD5E1),
+                        tagText = "Best Seller",
+                        isTagPrimary = true,
+                        originalPrice = 55.00,
+                        currentPrice = 45.00,
+                        quantity = 2
+                    ),
+                    CartItem(
+                        id = "item-3",
+                        productId = "deal_1",
+                        title = "Silicone Protective Case",
+                        imageRes = R.drawable.product_case_peach,
+                        colorName = "Color: Pastel Peach",
+                        colorHex = androidx.compose.ui.graphics.Color(0xFFFFB3B6),
+                        tagText = "Shockproof",
+                        isTagPrimary = false,
+                        originalPrice = 12.00,
+                        currentPrice = 9.00,
+                        quantity = 1
+                    )
+                ),
+            ),
+            onAction = {}
+        )
+    }
 }

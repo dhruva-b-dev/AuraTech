@@ -11,7 +11,8 @@ data class CategoriesUiState(
     val categories: List<CategoryCollection> = emptyList(),
     val cartItemCount: Int = 2,
     val toastMessage: String? = null,
-    val selectedTab: BottomNavTab = BottomNavTab.CATEGORIES
+    val selectedTab: BottomNavTab = BottomNavTab.CATEGORIES,
+    val isLoading: Boolean = false
 ) {
     val currentCategory: CategoryCollection?
         get() = categories.find { it.id == selectedCategoryId } ?: categories.firstOrNull()
