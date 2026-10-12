@@ -3,9 +3,8 @@ package com.dhruva.auratech.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModelProvider
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -28,13 +27,33 @@ import com.dhruva.auratech.ui.productdetails.ProductDetailViewModel
 import com.dhruva.auratech.ui.profile.ProfileAction
 import com.dhruva.auratech.ui.profile.ProfileScreen
 import com.dhruva.auratech.ui.profile.ProfileViewModel
+import com.dhruva.auratech.ui.addresses.AddressAction
+import com.dhruva.auratech.ui.addresses.AddressesScreen
+import com.dhruva.auratech.ui.addresses.AddressesViewModel
+import com.dhruva.auratech.ui.checkout.CheckoutAction
+import com.dhruva.auratech.ui.checkout.CheckoutScreen
+import com.dhruva.auratech.ui.checkout.CheckoutViewModel
+import com.dhruva.auratech.ui.orders.OrderAction
+import com.dhruva.auratech.ui.orders.OrdersScreen
+import com.dhruva.auratech.ui.orders.OrdersViewModel
+import com.dhruva.auratech.ui.auth.AuthAction
+import com.dhruva.auratech.ui.auth.AuthScreen
+import com.dhruva.auratech.ui.auth.AuthViewModel
+import com.dhruva.auratech.ui.wishlist.WishlistAction
+import com.dhruva.auratech.ui.wishlist.WishlistScreen
+import com.dhruva.auratech.ui.wishlist.WishlistViewModel
 
 object AppScreenRoutes {
+    const val AUTH_SCREEN = "store/auth"
     const val HOME_SCREEN = "store/home"
     const val PRODUCT_DETAIL_SCREEN = "store/product/{productId}"
     const val CATEGORIES_SCREEN = "store/categories"
     const val CART_SCREEN = "store/cart"
     const val PROFILE_SCREEN = "store/profile"
+    const val ADDRESSES_SCREEN = "store/addresses"
+    const val CHECKOUT_SCREEN = "store/checkout"
+    const val ORDERS_SCREEN = "store/orders"
+    const val WISHLIST_SCREEN = "store/wishlist"
 
     fun productDetailScreen(productId: String): String = "store/product/$productId"
 }
@@ -43,8 +62,22 @@ object AppScreenRoutes {
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = AppScreenRoutes.HOME_SCREEN
+    startDestination: String = if (com.google.firebase.auth.FirebaseAuth.getInstance().currentUser == null) AppScreenRoutes.AUTH_SCREEN else AppScreenRoutes.HOME_SCREEN
 ) {
+    val navigateToTab: (BottomNavTab) -> Unit = { tab ->
+        val route = when (tab) {
+            BottomNavTab.HOME -> AppScreenRoutes.HOME_SCREEN
+            BottomNavTab.CATEGORIES -> AppScreenRoutes.CATEGORIES_SCREEN
+            BottomNavTab.CART -> AppScreenRoutes.CART_SCREEN
+            BottomNavTab.PROFILE -> AppScreenRoutes.PROFILE_SCREEN
+        }
+        navController.navigate(route) {
+            popUpTo(navController.graph.startDestinationId) { saveState = true }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -52,7 +85,7 @@ fun AppNavHost(
     ) {
         //Home Screen
         composable(route = AppScreenRoutes.HOME_SCREEN) {
-            val homeViewModel: HomeViewModel = viewModel()
+            val homeViewModel: HomeViewModel = hiltViewModel()
             val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
             HomeScreen(
@@ -66,7 +99,7 @@ fun AppNavHost(
                         HomeAction.OnBannerShopNowClick -> {
                             navController.navigate(
                                 AppScreenRoutes.productDetailScreen(
-                                    "deal_3"
+                                    "deal_4"
                                 )
                             )
                         }
@@ -79,7 +112,8 @@ fun AppNavHost(
                             }
                         }
 
-                        HomeAction.OnViewAllCategoriesClick -> {
+                        HomeAction.OnViewAllCategoriesClick,
+                        HomeAction.OnViewAllFlashDealsClick -> {
                             navController.navigate(AppScreenRoutes.CATEGORIES_SCREEN) {
                                 popUpTo(AppScreenRoutes.HOME_SCREEN) { saveState = true }
                                 launchSingleTop = true
@@ -87,36 +121,20 @@ fun AppNavHost(
                             }
                         }
 
-                        is HomeAction.OnTabSelected -> {
-                            when (action.tab) {
-                                BottomNavTab.CATEGORIES -> {
-                                    navController.navigate(AppScreenRoutes.CATEGORIES_SCREEN) {
-                                        popUpTo(AppScreenRoutes.HOME_SCREEN) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-
-                                BottomNavTab.CART -> {
-                                    navController.navigate(AppScreenRoutes.CART_SCREEN) {
-                                        popUpTo(AppScreenRoutes.HOME_SCREEN) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-
-                                BottomNavTab.PROFILE -> {
-                                    navController.navigate(AppScreenRoutes.PROFILE_SCREEN) {
-                                        popUpTo(AppScreenRoutes.HOME_SCREEN) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-
-                                else -> {
-                                    homeViewModel.onAction(action)
-                                }
+                        HomeAction.OnProfileClick -> {
+                            navController.navigate(AppScreenRoutes.PROFILE_SCREEN) {
+                                popUpTo(AppScreenRoutes.HOME_SCREEN) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
                             }
+                        }
+
+                        HomeAction.OnScanBarcodeClick -> {
+                            navController.navigate(AppScreenRoutes.productDetailScreen("deal_4"))
+                        }
+
+                        is HomeAction.OnTabSelected -> {
+                            navigateToTab(action.tab)
                         }
 
                         else -> {
@@ -131,19 +149,11 @@ fun AppNavHost(
         composable(
             AppScreenRoutes.PRODUCT_DETAIL_SCREEN,
             arguments = listOf(navArgument("productId") {
-                defaultValue = "deal_3"
+                defaultValue = "deal_4"
                 type = NavType.StringType
             })
         ) { backStackEntry ->
-            val productId = backStackEntry.arguments?.getString("productId") ?: "deal_3"
-            val viewModel: ProductDetailViewModel = viewModel(
-                key = productId,
-                factory = object : ViewModelProvider.Factory {
-                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                        return ProductDetailViewModel(productId) as T
-                    }
-                }
-            )
+            val viewModel: ProductDetailViewModel = hiltViewModel()
 
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -153,6 +163,14 @@ fun AppNavHost(
                     when (action) {
                         is ProductDetailAction.OnBackClick -> {
                             navController.popBackStack()
+                        }
+
+                        is ProductDetailAction.OnCartClick -> {
+                            navController.navigate(AppScreenRoutes.CART_SCREEN) {
+                                popUpTo(AppScreenRoutes.HOME_SCREEN) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                         }
 
                         else -> {
@@ -166,7 +184,7 @@ fun AppNavHost(
 
         //Categories Screen
         composable(AppScreenRoutes.CATEGORIES_SCREEN) {
-            val categoriesViewModel: CategoriesViewModel = viewModel()
+            val categoriesViewModel: CategoriesViewModel = hiltViewModel()
             val uiState by categoriesViewModel.uiState.collectAsStateWithLifecycle()
 
             CategoriesScreen(
@@ -174,34 +192,7 @@ fun AppNavHost(
                 onAction = { action ->
                     when (action) {
                         is CategoriesAction.OnTabSelected -> {
-                            when (action.tab) {
-                                BottomNavTab.HOME -> {
-                                    navController.navigate(AppScreenRoutes.HOME_SCREEN) {
-                                        popUpTo(AppScreenRoutes.HOME_SCREEN) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
-
-                                BottomNavTab.PROFILE -> {
-                                    navController.navigate(AppScreenRoutes.PROFILE_SCREEN) {
-                                        popUpTo(AppScreenRoutes.PROFILE_SCREEN) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-
-                                BottomNavTab.CART -> {
-                                    navController.navigate(AppScreenRoutes.CART_SCREEN) {
-                                        popUpTo(AppScreenRoutes.CART_SCREEN) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-
-                                else -> {
-                                    categoriesViewModel.onAction(action)
-                                }
-                            }
+                            navigateToTab(action.tab)
                         }
 
                         is CategoriesAction.OnProductClick -> {
@@ -218,7 +209,7 @@ fun AppNavHost(
 
         //Cart Screen
         composable(AppScreenRoutes.CART_SCREEN) {
-            val cartViewModel: CartViewModel = viewModel()
+            val cartViewModel: CartViewModel = hiltViewModel()
             val uiState by cartViewModel.uiState.collectAsStateWithLifecycle()
 
 
@@ -227,36 +218,7 @@ fun AppNavHost(
                 onAction = { action ->
                     when (action) {
                         is CartAction.OnTabSelected -> {
-                            when (action.tab) {
-                                BottomNavTab.HOME -> {
-                                    navController.navigate(AppScreenRoutes.HOME_SCREEN) {
-                                        popUpTo(AppScreenRoutes.HOME_SCREEN) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
-
-                                BottomNavTab.PROFILE -> {
-                                    navController.navigate(AppScreenRoutes.PROFILE_SCREEN) {
-                                        popUpTo(AppScreenRoutes.PROFILE_SCREEN) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-
-                                BottomNavTab.CATEGORIES -> {
-                                    navController.navigate(AppScreenRoutes.CATEGORIES_SCREEN) {
-                                        popUpTo(AppScreenRoutes.CATEGORIES_SCREEN) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-
-                                else -> {
-                                    cartViewModel.onAction(action)
-                                }
-                            }
+                            navigateToTab(action.tab)
                         }
 
                         is CartAction.OnProductClick -> {
@@ -270,6 +232,14 @@ fun AppNavHost(
                             }
                         }
 
+                        is CartAction.OnProceedToCheckout -> {
+                            if (uiState.items.isNotEmpty()) {
+                                navController.navigate(AppScreenRoutes.CHECKOUT_SCREEN)
+                            } else {
+                                cartViewModel.onAction(action)
+                            }
+                        }
+
                         else -> {
                             cartViewModel.onAction(action)
                         }
@@ -277,9 +247,35 @@ fun AppNavHost(
                 })
         }
 
+        //Checkout Screen
+        composable(AppScreenRoutes.CHECKOUT_SCREEN) {
+            val checkoutViewModel: CheckoutViewModel = hiltViewModel()
+            val uiState by checkoutViewModel.uiState.collectAsStateWithLifecycle()
+
+            CheckoutScreen(
+                uiState = uiState,
+                onAction = { action ->
+                    when (action) {
+                        is CheckoutAction.OnBackClick -> {
+                            navController.popBackStack()
+                        }
+                        else -> {
+                            checkoutViewModel.onAction(action)
+                        }
+                    }
+                },
+                onNavigateHome = {
+                    navController.navigate(AppScreenRoutes.HOME_SCREEN) {
+                        popUpTo(AppScreenRoutes.HOME_SCREEN) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+
         //Profile Screen
         composable(AppScreenRoutes.PROFILE_SCREEN) {
-            val profileViewModel: ProfileViewModel = viewModel()
+            val profileViewModel: ProfileViewModel = hiltViewModel()
             val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
 
             ProfileScreen(
@@ -287,43 +283,96 @@ fun AppNavHost(
                 onAction = { action ->
                     when (action) {
                         is ProfileAction.OnTabSelected -> {
-                            when (action.tab) {
-                                BottomNavTab.HOME -> {
-                                    navController.navigate(AppScreenRoutes.HOME_SCREEN) {
-                                        popUpTo(AppScreenRoutes.HOME_SCREEN) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                            navigateToTab(action.tab)
+                        }
 
-                                BottomNavTab.CATEGORIES -> {
-                                    navController.navigate(AppScreenRoutes.CATEGORIES_SCREEN)
-                                    {
-                                        popUpTo(AppScreenRoutes.CATEGORIES_SCREEN) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-
-                                BottomNavTab.CART -> {
-                                    navController.navigate(AppScreenRoutes.CART_SCREEN) {
-                                        popUpTo(AppScreenRoutes.CART_SCREEN) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-
-                                else -> {
-                                    profileViewModel.onAction(action)
-                                }
+                        is ProfileAction.OnMenuItemClick -> {
+                            when (action.itemId) {
+                                "addresses" -> navController.navigate(AppScreenRoutes.ADDRESSES_SCREEN)
+                                "orders" -> navController.navigate(AppScreenRoutes.ORDERS_SCREEN)
+                                "wishlist" -> navController.navigate(AppScreenRoutes.WISHLIST_SCREEN)
+                                else -> profileViewModel.onAction(action)
                             }
                         }
 
                         else -> {
                             profileViewModel.onAction(action)
+                        }
+                    }
+                }
+            )
+        }
+
+        //Auth Screen
+        composable(AppScreenRoutes.AUTH_SCREEN) {
+            val authViewModel: AuthViewModel = hiltViewModel()
+            val uiState by authViewModel.uiState.collectAsStateWithLifecycle()
+
+            AuthScreen(
+                uiState = uiState,
+                onAction = { action ->
+                    authViewModel.onAction(action) {
+                        navController.navigate(AppScreenRoutes.HOME_SCREEN) {
+                            popUpTo(AppScreenRoutes.AUTH_SCREEN) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
+                }
+            )
+        }
+
+        //Wishlist Screen
+        composable(AppScreenRoutes.WISHLIST_SCREEN) {
+            val wishlistViewModel: WishlistViewModel = hiltViewModel()
+            val uiState by wishlistViewModel.uiState.collectAsStateWithLifecycle()
+
+            WishlistScreen(
+                uiState = uiState,
+                onAction = { action ->
+                    when (action) {
+                        is WishlistAction.OnBackClick -> navController.popBackStack()
+                        is WishlistAction.OnProductClick -> navController.navigate(AppScreenRoutes.productDetailScreen(action.productId))
+                        else -> wishlistViewModel.onAction(action)
+                    }
+                }
+            )
+        }
+
+        //Orders Screen
+        composable(AppScreenRoutes.ORDERS_SCREEN) {
+            val ordersViewModel: OrdersViewModel = hiltViewModel()
+            val uiState by ordersViewModel.uiState.collectAsStateWithLifecycle()
+
+            OrdersScreen(
+                uiState = uiState,
+                onAction = { action ->
+                    when (action) {
+                        is OrderAction.OnBackClick -> {
+                            navController.popBackStack()
+                        }
+                        else -> {
+                            ordersViewModel.onAction(action)
+                        }
+                    }
+                }
+            )
+        }
+
+        //Addresses Screen
+        composable(AppScreenRoutes.ADDRESSES_SCREEN) {
+            val addressesViewModel: AddressesViewModel = hiltViewModel()
+            val uiState by addressesViewModel.uiState.collectAsStateWithLifecycle()
+
+            AddressesScreen(
+                uiState = uiState,
+                onAction = { action ->
+                    when (action) {
+                        is AddressAction.OnBackClick -> {
+                            navController.popBackStack()
+                        }
+
+                        else -> {
+                            addressesViewModel.onAction(action)
                         }
                     }
                 }

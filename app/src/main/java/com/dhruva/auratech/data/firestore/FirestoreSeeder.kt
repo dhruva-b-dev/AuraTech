@@ -29,12 +29,15 @@ import kotlin.text.format
  * Utility class to seed Firestore with mock data.
  * Call this once to populate your Firestore database with initial data.
  */
+/*
 object FirestoreSeeder {
 
-    /**
+    */
+/**
      * Seeds all Firestore collections with mock data.
      * Call this from your app (e.g., in a debug screen or on first launch).
-     */
+     *//*
+
     suspend fun seedAllData() = coroutineScope {
         try {
             println("🌱 Starting Firestore seeding...")
@@ -57,9 +60,11 @@ object FirestoreSeeder {
         }
     }
 
-    /**
+    */
+/**
      * Seeds trust badges collection
-     */
+     *//*
+
     private suspend fun seedTrustBadges() {
         println("Seeding trust badges...")
         MockData.trustBadges.forEach { badge ->
@@ -74,9 +79,11 @@ object FirestoreSeeder {
         println("✅ Trust badges seeded: ${MockData.trustBadges.size} items")
     }
 
-    /**
+    */
+/**
      * Seeds promo banners collection
-     */
+     *//*
+
     private suspend fun seedPromoBanners() {
         println("Seeding promo banners...")
         val heroBanner = com.dhruva.auratech.data.firestore.FirestorePromoBanner(
@@ -90,9 +97,11 @@ object FirestoreSeeder {
         println("✅ Promo banners seeded: 1 item")
     }
 
-    /**
+    */
+/**
      * Seeds editorial banners collection
-     */
+     *//*
+
     private suspend fun seedEditorialBanners() {
         println("Seeding editorial banners...")
         MockData.editorialBanners.forEach { banner ->
@@ -108,9 +117,11 @@ object FirestoreSeeder {
         println("✅ Editorial banners seeded: ${MockData.editorialBanners.size} items")
     }
 
-    /**
+    */
+/**
      * Seeds categories collection
-     */
+     *//*
+
     private suspend fun seedCategories() {
         println("Seeding categories...")
         MockData.categories.forEach { category ->
@@ -126,9 +137,11 @@ object FirestoreSeeder {
         println("✅ Categories seeded: ${MockData.categories.size} items")
     }
 
-    /**
+    */
+/**
      * Seeds products collection
-     */
+     *//*
+
     private suspend fun seedProducts() {
         println("Seeding products...")
         val allProducts = MockData.flashDeals + MockData.bestSellers
@@ -139,9 +152,11 @@ object FirestoreSeeder {
         println("✅ Products seeded: ${allProducts.size} items")
     }
 
-    /**
+    */
+/**
      * Seeds product details collection
-     */
+     *//*
+
     private suspend fun seedProductDetails() {
         println("Seeding product details...")
         val productDetails = listOf(
@@ -210,9 +225,11 @@ object FirestoreSeeder {
         println("✅ Product details seeded: ${productDetails.size} items")
     }
 
-    /**
+    */
+/**
      * Seeds profile menu items collection
-     */
+     *//*
+
     private suspend fun seedProfileMenuItems() {
         println("Seeding profile menu items...")
         MockData.profileMenuItems.forEach { item ->
@@ -229,9 +246,11 @@ object FirestoreSeeder {
         println("✅ Profile menu items seeded: ${MockData.profileMenuItems.size} items")
     }
 
-    /**
+    */
+/**
      * Seeds user-specific data (profile, cart, orders) for a test user
-     */
+     *//*
+
     suspend fun seedUserData(userId: String = "test_user_123") = coroutineScope {
         try {
             println("🌱 Seeding user data for: $userId")
@@ -395,3 +414,4 @@ object FirestoreSeeder {
         }
     }
 }
+*/

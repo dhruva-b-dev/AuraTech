@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.dhruva.auratech.R
 import com.dhruva.auratech.model.ActiveDelivery
+import com.dhruva.auratech.model.Address
 import com.dhruva.auratech.model.BadgeIconType
 import com.dhruva.auratech.model.CartItem
 import com.dhruva.auratech.model.Category
@@ -33,6 +34,7 @@ import com.dhruva.auratech.model.CategoryCollection
 import com.dhruva.auratech.model.ColorVariant
 import com.dhruva.auratech.model.EditorialBanner
 import com.dhruva.auratech.model.OrderStatusCount
+import com.dhruva.auratech.model.OrderItem
 import com.dhruva.auratech.model.Product
 import com.dhruva.auratech.model.ProductDetail
 import com.dhruva.auratech.model.ProductHighlight
@@ -371,6 +373,60 @@ object FirestoreModelMapper {
         iconVector = iconFromName(firestoreItem.iconName),
         badgeText = firestoreItem.badgeText,
         isHighlightedBadge = firestoreItem.isHighlightedBadge
+    )
+
+    // =============================================================================
+    // ADDRESS MAPPING
+    // =============================================================================
+
+    fun toAddress(firestoreAddress: FirestoreAddress): Address = Address(
+        id = firestoreAddress.id,
+        title = firestoreAddress.title,
+        fullName = firestoreAddress.fullName,
+        streetAddress = firestoreAddress.streetAddress,
+        city = firestoreAddress.city,
+        state = firestoreAddress.state,
+        postalCode = firestoreAddress.postalCode,
+        phone = firestoreAddress.phone,
+        isDefault = firestoreAddress.isDefault
+    )
+
+    fun toFirestoreAddress(address: Address): FirestoreAddress = FirestoreAddress(
+        id = address.id,
+        title = address.title,
+        fullName = address.fullName,
+        streetAddress = address.streetAddress,
+        city = address.city,
+        state = address.state,
+        postalCode = address.postalCode,
+        phone = address.phone,
+        isDefault = address.isDefault
+    )
+
+    // =============================================================================
+    // ORDER MAPPING
+    // =============================================================================
+
+    fun toOrderItem(firestoreOrder: FirestoreOrder): OrderItem = OrderItem(
+        id = firestoreOrder.id,
+        orderId = firestoreOrder.orderId,
+        dateText = firestoreOrder.dateText,
+        totalAmount = firestoreOrder.totalAmount,
+        status = firestoreOrder.status,
+        itemsSummary = firestoreOrder.itemsSummary,
+        shippingAddress = firestoreOrder.shippingAddress,
+        paymentMethod = firestoreOrder.paymentMethod
+    )
+
+    fun toFirestoreOrder(orderItem: OrderItem): FirestoreOrder = FirestoreOrder(
+        id = orderItem.id,
+        orderId = orderItem.orderId,
+        dateText = orderItem.dateText,
+        totalAmount = orderItem.totalAmount,
+        status = orderItem.status,
+        itemsSummary = orderItem.itemsSummary,
+        shippingAddress = orderItem.shippingAddress,
+        paymentMethod = orderItem.paymentMethod
     )
 
     // =============================================================================

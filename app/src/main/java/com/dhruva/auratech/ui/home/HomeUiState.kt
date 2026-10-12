@@ -29,6 +29,12 @@ data class HomeUiState(
 
     val countdownSeconds: String
         get() = (remainingSeconds % 60).coerceAtLeast(0).toString().padStart(2, '0')
+
+    val filteredFlashDeals: List<Product>
+        get() = if (searchQuery.isBlank()) flashDeals else flashDeals.filter { it.title.contains(searchQuery, ignoreCase = true) }
+
+    val filteredBestSellers: List<Product>
+        get() = if (searchQuery.isBlank()) bestSellers else bestSellers.filter { it.title.contains(searchQuery, ignoreCase = true) }
 }
 
 sealed interface HomeAction {
@@ -46,4 +52,5 @@ sealed interface HomeAction {
     data object OnViewAllFlashDealsClick : HomeAction
     data object OnNotificationsClick : HomeAction
     data object OnBrandBagClick : HomeAction
+    data object OnProfileClick : HomeAction
 }

@@ -17,12 +17,19 @@ import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.material.icons.outlined.SupportAgent
 import androidx.compose.material.icons.outlined.Verified
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.DeveloperBoard
+import androidx.compose.material.icons.filled.Gamepad
+import androidx.compose.material.icons.filled.Headset
+import androidx.compose.material.icons.filled.PhoneAndroid
+import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material.icons.outlined.WaterDrop
 import androidx.compose.ui.graphics.Color
 import com.dhruva.auratech.R
 import com.dhruva.auratech.model.ActiveDelivery
 import com.dhruva.auratech.model.BadgeIconType
 import com.dhruva.auratech.model.Category
+import com.dhruva.auratech.model.CategoryCollection
 import com.dhruva.auratech.model.ColorVariant
 import com.dhruva.auratech.model.EditorialBanner
 import com.dhruva.auratech.model.OrderStatusCount
@@ -32,6 +39,7 @@ import com.dhruva.auratech.model.ProductHighlight
 import com.dhruva.auratech.model.ProfileMenuItem
 import com.dhruva.auratech.model.PromoBanner
 import com.dhruva.auratech.model.ReviewSummary
+import com.dhruva.auratech.model.SubCategory
 import com.dhruva.auratech.model.TrustBadge
 import com.dhruva.auratech.model.UserProfile
 import com.dhruva.auratech.model.UserReview
@@ -985,6 +993,177 @@ object MockData {
             title = "Account & Privacy Settings",
             subtitle = "Password, security, active sessions",
             iconVector = Icons.Outlined.Security
+        )
+    )
+
+    val sampleCategoryCollections = listOf(
+        CategoryCollection(
+            id = "cat_audio",
+            name = "Audio & Sound",
+            iconVector = Icons.Default.Headset,
+            bannerTag = "ACOUSTICS",
+            bannerTitle = "High-Fidelity Audio",
+            bannerSubtitle = "Studio-grade ANC headphones, Lossless DACs & wireless speakers.",
+            discountText = "30% OFF",
+            subcategories = listOf(
+                SubCategory("sub-1", "Over-Ear Headphones", 14, Icons.Default.Headset),
+                SubCategory("sub-2", "True Wireless Earbuds", 22, Icons.Default.Headset),
+                SubCategory("sub-3", "Studio DACs & Amps", 8, Icons.Default.Headset),
+                SubCategory("sub-4", "Wireless Speakers", 16, Icons.Default.Headset),
+                SubCategory("sub-5", "Boomboxes & Outdoor", 6, Icons.Default.Headset),
+                SubCategory("sub-6", "Audio Cables & Accs", 34, Icons.Default.Headset)
+            ),
+            products = listOf(
+                Product(
+                    id = "prod_audio_1",
+                    title = "AeroPro Wireless ANC",
+                    originalPrice = 385.0,
+                    currentPrice = 249.0,
+                    discountPercent = 35,
+                    rating = 4.9f,
+                    reviewCount = 128,
+                    imageRes = R.drawable.product_headphones_main,
+                    stockRemainingText = "Planar Magnetic • 40H"
+                ),
+                Product(
+                    id = "prod_audio_2",
+                    title = "EchoWave Studio ANC Headphones",
+                    originalPrice = 229.00,
+                    currentPrice = 129.99,
+                    discountPercent = 43,
+                    rating = 4.6f,
+                    reviewCount = 186,
+                    imageRes = R.drawable.product_earbuds,
+                    stockRemainingText = "Hi-Res LDAC • 30H"
+                )
+            )
+        ),
+        CategoryCollection(
+            id = "cat_wearables",
+            name = "Wearables & Health",
+            iconVector = Icons.Default.Watch,
+            bannerTag = "BIO SENSORS",
+            bannerTitle = "Next-Gen Smartwatches",
+            bannerSubtitle = "ECG monitoring & pulse tracking.",
+            discountText = "20% OFF",
+            subcategories = listOf(
+                SubCategory("sub-w1", "Smartwatches", 12, Icons.Default.Watch),
+                SubCategory("sub-w2", "Fitness Trackers", 8, Icons.Default.Watch)
+            ),
+            products = listOf(
+                Product(
+                    id = "prod_wearable_1",
+                    title = "Chronos Bio Pulse",
+                    originalPrice = 399.0,
+                    currentPrice = 319.0,
+                    discountPercent = 20,
+                    rating = 4.8f,
+                    reviewCount = 94,
+                    imageRes = R.drawable.product_smartwatch,
+                    stockRemainingText = "Sapphire Glass • ECG"
+                )
+            )
+        ),
+        CategoryCollection(
+            id = "cat_gaming",
+            name = "Computing & Gaming",
+            iconVector = Icons.Default.Gamepad,
+            bannerTag = "CYBER GEAR",
+            bannerTitle = "Pro Gaming Hardware",
+            bannerSubtitle = "Mechanical keyboards & ultra-low latency headsets.",
+            discountText = "15% OFF",
+            subcategories = listOf(
+                SubCategory("sub-g1", "Gaming Headsets", 10, Icons.Default.Gamepad),
+                SubCategory("sub-g2", "Keyboards", 15, Icons.Default.Gamepad)
+            ),
+            products = listOf(
+                Product(
+                    id = "prod_gaming_1",
+                    title = "Compact Wireless Mechanical Keyboard",
+                    originalPrice = 99.00,
+                    currentPrice = 79.99,
+                    discountPercent = 19,
+                    rating = 4.8f,
+                    reviewCount = 441,
+                    imageRes = R.drawable.product_keyboard,
+                    stockRemainingText = "Hot-swappable • RGB"
+                )
+            )
+        ),
+        CategoryCollection(
+            id = "cat_smart",
+            name = "Smart Living",
+            iconVector = Icons.Default.DeveloperBoard,
+            bannerTag = "IOT HUBS",
+            bannerTitle = "Smart Home Control",
+            bannerSubtitle = "Connected power & automated lighting.",
+            discountText = "25% OFF",
+            subcategories = listOf(
+                SubCategory("sub-s1", "Smart Hubs", 7, Icons.Default.DeveloperBoard)
+            ),
+            products = listOf(
+                Product(
+                    id = "prod_smart_1",
+                    title = "Halo Glow Portable Table Lamp",
+                    originalPrice = 42.00,
+                    currentPrice = 41.50,
+                    discountPercent = 1,
+                    rating = 4.8f,
+                    reviewCount = 164,
+                    imageRes = R.drawable.product_lamp,
+                    stockRemainingText = "RGB Touch Control"
+                )
+            )
+        ),
+        CategoryCollection(
+            id = "cat_mobile",
+            name = "Mobile Access.",
+            iconVector = Icons.Default.PhoneAndroid,
+            bannerTag = "MAGSAFE",
+            bannerTitle = "Armor Cases & Chargers",
+            bannerSubtitle = "Military-grade protection & wireless stands.",
+            discountText = "10% OFF",
+            subcategories = listOf(
+                SubCategory("sub-m1", "Armor Cases", 25, Icons.Default.PhoneAndroid)
+            ),
+            products = listOf(
+                Product(
+                    id = "prod_mobile_1",
+                    title = "Silicone Protective Case",
+                    originalPrice = 12.00,
+                    currentPrice = 9.00,
+                    discountPercent = 25,
+                    rating = 4.5f,
+                    reviewCount = 88,
+                    imageRes = R.drawable.product_case_peach,
+                    stockRemainingText = "Shockproof Peach"
+                )
+            )
+        ),
+        CategoryCollection(
+            id = "cat_photo",
+            name = "Photo & Drones",
+            iconVector = Icons.Default.CameraAlt,
+            bannerTag = "AERIAL 4K",
+            bannerTitle = "Action Cameras & Drones",
+            bannerSubtitle = "Cinematic 4K 120fps recording gear.",
+            discountText = "18% OFF",
+            subcategories = listOf(
+                SubCategory("sub-p1", "FPV Drones", 6, Icons.Default.CameraAlt)
+            ),
+            products = listOf(
+                Product(
+                    id = "prod_photo_1",
+                    title = "Insulated Commuter Bottle Nova",
+                    originalPrice = 28.00,
+                    currentPrice = 21.50,
+                    discountPercent = 23,
+                    rating = 4.6f,
+                    reviewCount = 186,
+                    imageRes = R.drawable.product_tumbler,
+                    stockRemainingText = "Vacuum Insulated"
+                )
+            )
         )
     )
 }

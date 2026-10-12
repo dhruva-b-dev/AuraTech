@@ -177,3 +177,26 @@ data class FirestoreProfileMenuItem(
     val badgeText: String? = null,
     val isHighlightedBadge: Boolean = false
 )
+
+data class FirestoreAddress(
+    val id: String = "",
+    val title: String = "",
+    val fullName: String = "",
+    val streetAddress: String = "",
+    val city: String = "",
+    val state: String = "",
+    val postalCode: String = "",
+    val phone: String = "",
+    val isDefault: Boolean = false
+)
+
+data class FirestoreOrder(
+    val id: String = "",
+    val orderId: String = "",
+    val dateText: String = "",
+    val totalAmount: Double = 0.0,
+    val status: String = "Processing",
+    val itemsSummary: String = "",
+    val shippingAddress: String = "",
+    val paymentMethod: String = ""
+)

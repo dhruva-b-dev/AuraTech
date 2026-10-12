@@ -19,13 +19,14 @@ data class CategoriesUiState(
 
     val filteredProducts: List<Product>
         get() {
-            val baseList = currentCategory?.products.orEmpty()
+            val allProducts = categories.flatMap { it.products }
             return if (searchQuery.isBlank()) {
-                baseList
+                currentCategory?.products.orEmpty()
             } else {
-                baseList.filter {
-                    it.title.contains(searchQuery, ignoreCase = true)
-                }
+                allProducts.filter {
+                    it.title.contains(searchQuery, ignoreCase = true) ||
+                    (it.stockRemainingText?.contains(searchQuery, ignoreCase = true) == true)
+                }.distinctBy { it.id }
             }
         }
 }

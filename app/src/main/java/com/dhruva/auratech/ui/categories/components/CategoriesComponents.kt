@@ -103,12 +103,6 @@ fun CategoriesTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = "Menu",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
                 Text(
                     text = "AURA TECH",
                     style = MaterialTheme.typography.titleLarge.copy(
@@ -123,12 +117,12 @@ fun CategoriesTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Icon(
+                /*Icon(
                     imageVector = Icons.Outlined.QrCodeScanner,
                     contentDescription = "Scan Barcode",
                     tint = TextGray,
                     modifier = Modifier.size(20.dp)
-                )
+                )*/
 
                 IconButton(
                     onClick = onNotificationsClick,

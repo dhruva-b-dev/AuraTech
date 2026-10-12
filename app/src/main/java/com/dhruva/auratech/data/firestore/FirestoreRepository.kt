@@ -8,19 +8,28 @@ import com.dhruva.auratech.data.firestore.FirestoreRepository.COLLECTIONS.COLLEC
 import com.dhruva.auratech.data.firestore.FirestoreRepository.COLLECTIONS.COLLECTION_TRUST_BADGES
 import com.dhruva.auratech.data.firestore.FirestoreRepository.COLLECTIONS.COLLECTION_EDITORIAL_BANNERS
 import com.dhruva.auratech.data.firestore.FirestoreRepository.COLLECTIONS.COLLECTION_PRODUCT_DETAILS
+import com.dhruva.auratech.data.firestore.FirestoreRepository.COLLECTIONS.COLLECTION_ADDRESSES
+import com.dhruva.auratech.data.firestore.FirestoreRepository.COLLECTIONS.COLLECTION_ORDERS
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Firestore repository for all data operations.
  * Provides reactive streams using Flow for real-time updates.
  */
-object FirestoreRepository {
-    
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+@Singleton
+class FirestoreRepository @Inject constructor(
+    private val firestore: FirebaseFirestore
+) {
 
     // Collection names
     private object COLLECTIONS{
@@ -28,6 +37,8 @@ object FirestoreRepository {
         const val COLLECTION_CATEGORIES = "categories"
         const val COLLECTION_USERS = "users"
         const val COLLECTION_CART = "cart"
+        const val COLLECTION_ADDRESSES = "addresses"
+        const val COLLECTION_ORDERS = "orders"
         const val COLLECTION_PROMO_BANNERS = "promoBanners"
         const val COLLECTION_TRUST_BADGES = "trustBadges"
         const val COLLECTION_EDITORIAL_BANNERS = "editorialBanners"
@@ -198,7 +209,7 @@ object FirestoreRepository {
 
     fun getHeroPromoBanner(): Flow<FirestorePromoBanner?> = callbackFlow {
         val listener = firestore.collection(COLLECTION_PROMO_BANNERS)
-            .whereEqualTo("tag", "hero")
+            .whereEqualTo("id", "banner_autumn_festival")
             .limit(1)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -496,5 +507,130 @@ object FirestoreRepository {
             .document()
         docRef.set(delivery).await()
         return docRef.id
+    }
+
+    // =============================================================================
+    // ADDRESSES (User-specific)
+    // =============================================================================
+
+    fun getUserAddresses(userId: String): Flow<List<FirestoreAddress>> = callbackFlow {
+        val listener = firestore.collection(COLLECTION_USERS)
+            .document(userId)
+            .collection(COLLECTION_ADDRESSES)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val addresses = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(FirestoreAddress::class.java)?.copy(id = doc.id)
+                } ?: emptyList()
+                trySend(addresses)
+            }
+        awaitClose { listener.remove() }
+    }
+
+    suspend fun addAddress(userId: String, address: FirestoreAddress): String {
+        val addressesRef = firestore.collection(COLLECTION_USERS)
+            .document(userId)
+            .collection(COLLECTION_ADDRESSES)
+        
+        val docRef = if (address.id.isEmpty()) addressesRef.document() else addressesRef.document(address.id)
+        
+        if (address.isDefault) {
+            val snapshot = addressesRef.get().await()
+            for (doc in snapshot.documents) {
+                if (doc.id != docRef.id) {
+                    doc.reference.update("isDefault", false).await()
+                }
+            }
+        }
+        
+        docRef.set(address).await()
+        return docRef.id
+    }
+
+    suspend fun deleteAddress(userId: String, addressId: String): Boolean {
+        return try {
+            firestore.collection(COLLECTION_USERS)
+                .document(userId)
+                .collection(COLLECTION_ADDRESSES)
+                .document(addressId)
+                .delete()
+                .await()
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    suspend fun setDefaultAddress(userId: String, addressId: String): Boolean {
+        return try {
+            val addressesRef = firestore.collection(COLLECTION_USERS)
+                .document(userId)
+                .collection(COLLECTION_ADDRESSES)
+            
+            val snapshot = addressesRef.get().await()
+            for (doc in snapshot.documents) {
+                doc.reference.update("isDefault", doc.id == addressId).await()
+            }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    // =============================================================================
+    // ORDERS (User-specific)
+    // =============================================================================
+
+    fun getUserOrders(userId: String): Flow<List<FirestoreOrder>> = callbackFlow {
+        val listener = firestore.collection(COLLECTION_USERS)
+            .document(userId)
+            .collection(COLLECTION_ORDERS)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val orders = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(FirestoreOrder::class.java)?.copy(id = doc.id)
+                } ?: emptyList()
+                trySend(orders)
+            }
+        awaitClose { listener.remove() }
+    }
+
+    suspend fun addOrder(userId: String, order: FirestoreOrder): String {
+        val docRef = firestore.collection(COLLECTION_USERS)
+            .document(userId)
+            .collection(COLLECTION_ORDERS)
+            .document()
+        docRef.set(order).await()
+        return docRef.id
+    }
+
+    suspend fun ensureUserProfileExists(userId: String) {
+        try {
+            val docRef = firestore.collection(COLLECTION_USERS).document(userId)
+            val snapshot = docRef.get().await()
+            if (!snapshot.exists()) {
+                val defaultProfile = FirestoreUserProfile(
+                    userId = userId,
+                    name = "Aura Tech User",
+                    email = "user@auratech.com",
+                    phone = "+1 (555) 019-2834",
+                    avatarResName = "user_avatar",
+                    isVerified = true,
+                    memberTier = "Bronze Member ★",
+                    walletBalance = 150.00,
+                    rewardPoints = 250,
+                    activeCouponsCount = 3
+                )
+                docRef.set(defaultProfile).await()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

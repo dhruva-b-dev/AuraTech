@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dhruva.auratech.data.firestore.FirestoreModelMapper
 import com.dhruva.auratech.data.firestore.FirestoreRepository
 import com.dhruva.auratech.model.Product
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +15,16 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
-class HomeViewModel : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val firestoreRepository: FirestoreRepository,
+    firebaseAuth: com.google.firebase.auth.FirebaseAuth
+) : ViewModel() {
+
+    private val userId: String = firebaseAuth.currentUser?.uid ?: "test_user_123"
 
     private val _uiState = MutableStateFlow(
         HomeUiState(
@@ -44,11 +53,11 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch {
             // Combine all Firestore streams
             combine(
-                FirestoreRepository.getTrustBadges(),
-                FirestoreRepository.getHeroPromoBanner(),
-                FirestoreRepository.getAllCategories(),
-                FirestoreRepository.getAllProducts(),
-                FirestoreRepository.getEditorialBanners()
+                firestoreRepository.getTrustBadges(),
+                firestoreRepository.getHeroPromoBanner(),
+                firestoreRepository.getAllCategories(),
+                firestoreRepository.getAllProducts(),
+                firestoreRepository.getEditorialBanners()
             ) { trustBadges, heroBanner, categories, allProducts, editorialBanners ->
                 _uiState.update { currentState ->
                     currentState.copy(
@@ -125,6 +134,7 @@ class HomeViewModel : ViewModel() {
 
             is HomeAction.OnProductClick -> {
                 // Navigation to PDP handled by router/screen callbacks
+                //todo:correct this
             }
 
             is HomeAction.OnScanBarcodeClick -> {
@@ -154,21 +164,55 @@ class HomeViewModel : ViewModel() {
             is HomeAction.OnBrandBagClick -> {
                 showToast("Store Official Collection")
             }
+
+            HomeAction.OnProfileClick -> {
+                // Handled in navigation host
+            }
         }
     }
 
     private fun addItemToCart(product: Product) {
-        _uiState.update { currentState ->
-            currentState.copy(cartItemCount = currentState.cartItemCount + 1)
+        viewModelScope.launch {
+            try {
+                firestoreRepository.ensureUserProfileExists(userId)
+                val cartItem = com.dhruva.auratech.data.firestore.FirestoreCartItem(
+                    id = "cart_${product.id}",
+                    productId = product.id,
+                    title = product.title,
+                    imageResName = when (product.imageRes) {
+                        com.dhruva.auratech.R.drawable.product_earbuds -> "product_earbuds"
+                        com.dhruva.auratech.R.drawable.product_smartwatch -> "product_smartwatch"
+                        com.dhruva.auratech.R.drawable.product_headphones_main -> "product_headphones_main"
+                        com.dhruva.auratech.R.drawable.product_keyboard -> "product_keyboard"
+                        com.dhruva.auratech.R.drawable.product_serum -> "product_serum"
+                        com.dhruva.auratech.R.drawable.product_tumbler -> "product_tumbler"
+                        com.dhruva.auratech.R.drawable.product_lamp -> "product_lamp"
+                        com.dhruva.auratech.R.drawable.product_case_peach -> "product_case_peach"
+                        else -> "product_headphones_main"
+                    },
+                    originalPrice = product.originalPrice,
+                    currentPrice = product.currentPrice,
+                    quantity = 1,
+                    tagText = product.badgeText ?: "In Stock",
+                    colorName = "Color: Standard",
+                    colorHex = "#1E293B"
+                )
+                firestoreRepository.addCartItem(userId, cartItem)
+                _uiState.update { currentState ->
+                    currentState.copy(cartItemCount = currentState.cartItemCount + 1)
+                }
+                showToast("Added '${product.title.take(18)}...' to cart!")
+            } catch (e: Exception) {
+                showToast("Failed to add to cart: ${e.message}")
+            }
         }
-        showToast("Added to cart!")
     }
 
     private fun showToast(message: String) {
         toastJob?.cancel()
         _uiState.update { it.copy(toastMessage = message) }
         toastJob = viewModelScope.launch {
-            delay(2200)
+            delay(2200.milliseconds)
             _uiState.update { it.copy(toastMessage = null) }
         }
     }
@@ -177,7 +221,7 @@ class HomeViewModel : ViewModel() {
         countdownJob?.cancel()
         countdownJob = viewModelScope.launch {
             while (isActive) {
-                delay(1000)
+                delay(1000.milliseconds)
                 _uiState.update { currentState ->
                     if (currentState.remainingSeconds > 0) {
                         currentState.copy(remainingSeconds = currentState.remainingSeconds - 1)

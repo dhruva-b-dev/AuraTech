@@ -110,6 +110,7 @@ import com.dhruva.auratech.ui.theme.TimerBoxBg
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun HomeTopBar(
+    onProfileClick: () -> Unit = {},
     onNotificationsClick: () -> Unit = {},
     onBrandBagClick: () -> Unit = {},
     modifier: Modifier = Modifier
@@ -137,6 +138,7 @@ fun HomeTopBar(
                     .size(36.dp)
                     .clip(CircleShape)
                     .border(1.dp, Color(0xFF282C3F), CircleShape)
+                    .clickable { onProfileClick() }
             )
 
             Text(

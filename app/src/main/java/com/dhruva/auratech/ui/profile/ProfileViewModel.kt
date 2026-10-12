@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dhruva.auratech.data.firestore.FirestoreModelMapper
 import com.dhruva.auratech.data.firestore.FirestoreRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,10 +13,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProfileViewModel(
-    private val userId: String = "default_user"
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    private val firestoreRepository: FirestoreRepository,
+    firebaseAuth: com.google.firebase.auth.FirebaseAuth
 ) : ViewModel() {
+
+    private val userId: String = firebaseAuth.currentUser?.uid ?: "test_user_123"
 
     private val _uiState = MutableStateFlow(
         ProfileUiState(
@@ -37,11 +43,12 @@ class ProfileViewModel(
 
     private fun loadFirestoreData() {
         viewModelScope.launch {
+            firestoreRepository.ensureUserProfileExists(userId)
             combine(
-                FirestoreRepository.getUserProfile(userId),
-                FirestoreRepository.getOrderStatusCount(userId),
-                FirestoreRepository.getActiveDelivery(userId),
-                FirestoreRepository.getProfileMenuItems()
+                firestoreRepository.getUserProfile(userId),
+                firestoreRepository.getOrderStatusCount(userId),
+                firestoreRepository.getActiveDelivery(userId),
+                firestoreRepository.getProfileMenuItems()
             ) { userProfile, orderStatus, activeDelivery, menuItems ->
                 _uiState.update { currentState ->
                     currentState.copy(
@@ -60,7 +67,7 @@ class ProfileViewModel(
         when (action) {
             is ProfileAction.OnTopUpWallet -> {
                 viewModelScope.launch {
-                    FirestoreRepository.updateUserProfile(
+                    firestoreRepository.updateUserProfile(
                         userId,
                         mapOf("walletBalance" to (_uiState.value.userProfile?.walletBalance ?: 0.0) + 25.00)
                     )
@@ -73,7 +80,11 @@ class ProfileViewModel(
             }
 
             is ProfileAction.OnViewCoupons -> {
-                showToast("3 Coupons available: FALL1403, WELCOME10, FREESHIP")
+                _uiState.update { it.copy(showCouponsDialog = true) }
+            }
+
+            is ProfileAction.OnDismissCoupons -> {
+                _uiState.update { it.copy(showCouponsDialog = false) }
             }
 
             is ProfileAction.OnOrderStatusClick -> {
@@ -94,7 +105,41 @@ class ProfileViewModel(
             }
 
             is ProfileAction.OnEditProfileClick -> {
-                showToast("Edit Profile dialog")
+                val profile = _uiState.value.userProfile
+                _uiState.update {
+                    it.copy(
+                        showEditProfileDialog = true,
+                        editNameInput = profile?.name ?: "",
+                        editPhoneInput = profile?.phone ?: ""
+                    )
+                }
+            }
+
+            is ProfileAction.OnDismissEditProfile -> {
+                _uiState.update { it.copy(showEditProfileDialog = false) }
+            }
+
+            is ProfileAction.OnEditNameChanged -> {
+                _uiState.update { it.copy(editNameInput = action.name) }
+            }
+
+            is ProfileAction.OnEditPhoneChanged -> {
+                _uiState.update { it.copy(editPhoneInput = action.phone) }
+            }
+
+            is ProfileAction.OnSaveProfile -> {
+                val state = _uiState.value
+                viewModelScope.launch {
+                    firestoreRepository.updateUserProfile(
+                        userId,
+                        mapOf(
+                            "name" to state.editNameInput,
+                            "phone" to state.editPhoneInput
+                        )
+                    )
+                    _uiState.update { it.copy(showEditProfileDialog = false) }
+                    showToast("Profile updated successfully!")
+                }
             }
 
             is ProfileAction.OnNotificationsClick -> {

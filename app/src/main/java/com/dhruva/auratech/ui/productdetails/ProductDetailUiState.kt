@@ -37,4 +37,5 @@ sealed interface ProductDetailAction {
     data object OnBackClick : ProductDetailAction
     data object OnDismissToast : ProductDetailAction
     data class OnVoteReview(val isUpvote: Boolean) : ProductDetailAction
+    data object OnCartClick : ProductDetailAction
 }

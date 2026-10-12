@@ -27,6 +27,13 @@ import com.dhruva.auratech.ui.profile.components.ProfileTopBar
 import com.dhruva.auratech.ui.profile.components.WalletLoyaltyWidget
 import com.dhruva.auratech.ui.theme.AuraTechTheme
 import com.dhruva.auratech.ui.theme.DarkBackground
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.dhruva.auratech.ui.theme.*
 
 @Composable
 fun ProfileScreen(
@@ -117,6 +124,97 @@ fun ProfileScreen(
                 message = uiState.toastMessage,
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
+
+            if (uiState.showEditProfileDialog) {
+                EditProfileDialog(uiState = uiState, onAction = onAction)
+            }
+
+            if (uiState.showCouponsDialog) {
+                CouponsDialog(onDismiss = { onAction(ProfileAction.OnDismissCoupons) })
+            }
+        }
+    }
+}
+
+@Composable
+fun EditProfileDialog(uiState: ProfileUiState, onAction: (ProfileAction) -> Unit) {
+    AlertDialog(
+        onDismissRequest = { onAction(ProfileAction.OnDismissEditProfile) },
+        containerColor = CardBackground,
+        title = { Text("Edit Profile", color = Color.White) },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                OutlinedTextField(
+                    value = uiState.editNameInput,
+                    onValueChange = { onAction(ProfileAction.OnEditNameChanged(it)) },
+                    label = { Text("Full Name") },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(focusedTextColor = Color.White, unfocusedTextColor = Color.White)
+                )
+                OutlinedTextField(
+                    value = uiState.editPhoneInput,
+                    onValueChange = { onAction(ProfileAction.OnEditPhoneChanged(it)) },
+                    label = { Text("Phone Number") },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(focusedTextColor = Color.White, unfocusedTextColor = Color.White)
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onAction(ProfileAction.OnSaveProfile) },
+                colors = ButtonDefaults.buttonColors(containerColor = Primary)
+            ) {
+                Text("Save Changes", color = Color.Black)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { onAction(ProfileAction.OnDismissEditProfile) }) {
+                Text("Cancel", color = TextGray)
+            }
+        }
+    )
+}
+
+@Composable
+fun CouponsDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = CardBackground,
+        title = { Text("Available Coupons", color = Color.White, fontWeight = FontWeight.Bold) },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                CouponItem("FALL1403", "$10.00 OFF on orders above $50")
+                CouponItem("NOROOZ", "$10.00 promo discount")
+                CouponItem("WELCOME10", "10% OFF your first order")
+                CouponItem("FREESHIP", "Free Express Delivery")
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Primary)) {
+                Text("Close", color = Color.Black)
+            }
+        }
+    )
+}
+
+@Composable
+fun CouponItem(code: String, desc: String) {
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = CodeBg,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(text = code, color = CyanAccent, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(text = desc, color = TextGray, fontSize = 12.sp)
         }
     }
 }

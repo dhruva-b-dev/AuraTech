@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dhruva.auratech.data.firestore.FirestoreModelMapper
 import com.dhruva.auratech.data.firestore.FirestoreRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,10 +12,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CartViewModel(
-    private val userId: String = "default_user"
+@HiltViewModel
+class CartViewModel @Inject constructor(
+    private val firestoreRepository: FirestoreRepository,
+    firebaseAuth: com.google.firebase.auth.FirebaseAuth
 ) : ViewModel() {
+
+    private val userId: String = firebaseAuth.currentUser?.uid ?: "test_user_123"
 
     private val _uiState = MutableStateFlow(
         CartUiState(
@@ -33,7 +39,8 @@ class CartViewModel(
 
     private fun loadUserCart() {
         viewModelScope.launch {
-            FirestoreRepository.getUserCartItems(userId).collect { firestoreItems ->
+            firestoreRepository.ensureUserProfileExists(userId)
+            firestoreRepository.getUserCartItems(userId).collect { firestoreItems ->
                 val cartItems = firestoreItems.map { FirestoreModelMapper.toCartItem(it) }
                 _uiState.update { it.copy(items = cartItems, isLoading = false) }
             }
@@ -47,7 +54,7 @@ class CartViewModel(
                 if (item != null) {
                     val newQuantity = (item.quantity + action.delta).coerceAtLeast(1)
                     viewModelScope.launch {
-                        FirestoreRepository.updateCartItem(
+                        firestoreRepository.updateCartItem(
                             userId,
                             action.itemId,
                             mapOf("quantity" to newQuantity)
@@ -58,14 +65,14 @@ class CartViewModel(
 
             is CartAction.OnRemoveItem -> {
                 viewModelScope.launch {
-                    FirestoreRepository.removeCartItem(userId, action.itemId)
+                    firestoreRepository.removeCartItem(userId, action.itemId)
                 }
                 showToast("Item removed from cart")
             }
 
             is CartAction.OnClearCart -> {
                 viewModelScope.launch {
-                    FirestoreRepository.clearUserCart(userId)
+                    firestoreRepository.clearUserCart(userId)
                 }
                 showToast("Cart cleared")
             }

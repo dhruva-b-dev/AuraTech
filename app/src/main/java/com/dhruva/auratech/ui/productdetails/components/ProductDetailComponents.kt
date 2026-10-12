@@ -90,6 +90,7 @@ fun ProductDetailTopBar(
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onToggleFavorite: () -> Unit,
+    onCartClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -157,7 +158,7 @@ fun ProductDetailTopBar(
 
             Box {
                 IconButton(
-                    onClick = {},
+                    onClick = onCartClick,
                     modifier = Modifier.size(36.dp)
                 ) {
                     Icon(

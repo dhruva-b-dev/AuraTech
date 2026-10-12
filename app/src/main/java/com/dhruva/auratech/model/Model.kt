@@ -66,7 +66,7 @@ enum class BottomNavTab(
 ) {
     HOME("Home"),
     CATEGORIES("Categories"),
-    CART("Cart", badgeCount = 2),
+    CART("Cart", badgeCount = 0),
     PROFILE("Profile")
 }
 
@@ -162,4 +162,27 @@ data class ProfileMenuItem(
     val iconVector: ImageVector,
     val badgeText: String? = null,
     val isHighlightedBadge: Boolean = false
+)
+
+data class Address(
+    val id: String,
+    val title: String,
+    val fullName: String,
+    val streetAddress: String,
+    val city: String,
+    val state: String,
+    val postalCode: String,
+    val phone: String,
+    val isDefault: Boolean
+)
+
+data class OrderItem(
+    val id: String,
+    val orderId: String,
+    val dateText: String,
+    val totalAmount: Double,
+    val status: String,
+    val itemsSummary: String,
+    val shippingAddress: String,
+    val paymentMethod: String
 )

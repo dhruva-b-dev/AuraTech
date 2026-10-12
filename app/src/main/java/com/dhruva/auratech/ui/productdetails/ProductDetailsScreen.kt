@@ -44,7 +44,8 @@ fun ProductDetailScreen(
                 isFavorite = uiState.isFavorite,
                 onBackClick = { onAction(ProductDetailAction.OnBackClick) },
                 onShareClick = { onAction(ProductDetailAction.OnShareClick) },
-                onToggleFavorite = { onAction(ProductDetailAction.OnToggleFavorite) }
+                onToggleFavorite = { onAction(ProductDetailAction.OnToggleFavorite) },
+                onCartClick = { onAction(ProductDetailAction.OnCartClick) }
             )
         },
         bottomBar = {

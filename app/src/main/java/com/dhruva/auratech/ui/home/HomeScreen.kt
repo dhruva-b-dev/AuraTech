@@ -40,6 +40,7 @@ fun HomeScreen(
         containerColor = DarkBackground,
         topBar = {
             HomeTopBar(
+                onProfileClick = { onAction(HomeAction.OnProfileClick) },
                 onNotificationsClick = { onAction(HomeAction.OnNotificationsClick) },
                 onBrandBagClick = { onAction(HomeAction.OnBrandBagClick) }
             )
@@ -96,7 +97,7 @@ fun HomeScreen(
 
                 // Flash Deals / Allocations
                 FlashDealsSection(
-                    deals = uiState.flashDeals,
+                    deals = uiState.filteredFlashDeals,
                     onProductClick = { onAction(HomeAction.OnProductClick(it)) },
                     onViewAllClick = { onAction(HomeAction.OnViewAllFlashDealsClick) }
                 )
@@ -106,7 +107,7 @@ fun HomeScreen(
 
                 // Best Sellers
                 BestSellersSection(
-                    products = uiState.bestSellers,
+                    products = uiState.filteredBestSellers,
                     onToggleFavorite = { onAction(HomeAction.OnToggleFavorite(it)) },
                     onAddToCart = { onAction(HomeAction.OnAddToCart(it)) },
                     onProductClick = { onAction(HomeAction.OnProductClick(it)) },
