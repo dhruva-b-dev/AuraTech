@@ -12,6 +12,10 @@ class AuraTechApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
+        com.stripe.android.PaymentConfiguration.init(
+            this,
+            "pk_test_51UPjszEKg1PiPhcMgVISEaAh7LX66DS5m1Owx26A0VDa885yq7XYyPhQMbju2dhMPcGk59xPrKtLbZNmmEqEkjco00B9fttKdD"
+        )
         //only to seed 1 time data to firestore, data seeded from mockdata
         //seedFirestore()
     }

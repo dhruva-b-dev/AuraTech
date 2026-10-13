@@ -10,6 +10,7 @@ import com.dhruva.auratech.data.firestore.FirestoreRepository.COLLECTIONS.COLLEC
 import com.dhruva.auratech.data.firestore.FirestoreRepository.COLLECTIONS.COLLECTION_PRODUCT_DETAILS
 import com.dhruva.auratech.data.firestore.FirestoreRepository.COLLECTIONS.COLLECTION_ADDRESSES
 import com.dhruva.auratech.data.firestore.FirestoreRepository.COLLECTIONS.COLLECTION_ORDERS
+import com.dhruva.auratech.data.firestore.FirestoreRepository.COLLECTIONS.COLLECTION_WISHLIST
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -39,6 +40,7 @@ class FirestoreRepository @Inject constructor(
         const val COLLECTION_CART = "cart"
         const val COLLECTION_ADDRESSES = "addresses"
         const val COLLECTION_ORDERS = "orders"
+        const val COLLECTION_WISHLIST = "wishlist"
         const val COLLECTION_PROMO_BANNERS = "promoBanners"
         const val COLLECTION_TRUST_BADGES = "trustBadges"
         const val COLLECTION_EDITORIAL_BANNERS = "editorialBanners"
@@ -608,6 +610,48 @@ class FirestoreRepository @Inject constructor(
             .document()
         docRef.set(order).await()
         return docRef.id
+    }
+
+    // =============================================================================
+    // WISHLIST (User-specific)
+    // =============================================================================
+
+    fun getUserWishlist(userId: String): Flow<List<FirestoreProduct>> = callbackFlow {
+        val listener = firestore.collection(COLLECTION_USERS)
+            .document(userId)
+            .collection(COLLECTION_WISHLIST)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val products = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(FirestoreProduct::class.java)?.copy(id = doc.id, isFavorite = true)
+                } ?: emptyList()
+                trySend(products)
+            }
+        awaitClose { listener.remove() }
+    }
+
+    suspend fun toggleUserWishlistProduct(userId: String, product: FirestoreProduct): Boolean {
+        return try {
+            val docRef = firestore.collection(COLLECTION_USERS)
+                .document(userId)
+                .collection(COLLECTION_WISHLIST)
+                .document(product.id)
+
+            val snapshot = docRef.get().await()
+            if (snapshot.exists()) {
+                docRef.delete().await()
+                false
+            } else {
+                val wishItem = product.copy(isFavorite = true)
+                docRef.set(wishItem).await()
+                true
+            }
+        } catch (e: Exception) {
+            false
+        }
     }
 
     suspend fun ensureUserProfileExists(userId: String) {

@@ -47,6 +47,16 @@ class HomeViewModel @Inject constructor(
     init {
         loadFirestoreData()
         startCountdownTimer()
+        observeCartCount()
+    }
+
+    private fun observeCartCount() {
+        viewModelScope.launch {
+            firestoreRepository.getUserCartItems(userId).collect { items ->
+                val count = items.sumOf { it.quantity }
+                _uiState.update { it.copy(cartItemCount = count) }
+            }
+        }
     }
 
     private fun loadFirestoreData() {
@@ -98,25 +108,23 @@ class HomeViewModel @Inject constructor(
             }
 
             is HomeAction.OnToggleFavorite -> {
-                _uiState.update { currentState ->
-                    val updatedBestSellers = currentState.bestSellers.map { product ->
-                        if (product.id == action.productId) {
-                            product.copy(isFavorite = !product.isFavorite)
-                        } else {
-                            product
+                viewModelScope.launch {
+                    val allProds = _uiState.value.bestSellers + _uiState.value.flashDeals
+                    val targetProd = allProds.find { it.id == action.productId }
+                    if (targetProd != null) {
+                        val firestoreProd = FirestoreModelMapper.toFirestoreProduct(targetProd)
+                        val isAdded = firestoreRepository.toggleUserWishlistProduct(userId, firestoreProd)
+                        _uiState.update { currentState ->
+                            val updatedBestSellers = currentState.bestSellers.map { p ->
+                                if (p.id == action.productId) p.copy(isFavorite = isAdded) else p
+                            }
+                            val updatedFlashDeals = currentState.flashDeals.map { p ->
+                                if (p.id == action.productId) p.copy(isFavorite = isAdded) else p
+                            }
+                            currentState.copy(bestSellers = updatedBestSellers, flashDeals = updatedFlashDeals)
                         }
+                        showToast(if (isAdded) "Added to Wishlist" else "Removed from Wishlist")
                     }
-                    val updatedFlashDeals = currentState.flashDeals.map { product ->
-                        if (product.id == action.productId) {
-                            product.copy(isFavorite = !product.isFavorite)
-                        } else {
-                            product
-                        }
-                    }
-                    currentState.copy(
-                        bestSellers = updatedBestSellers,
-                        flashDeals = updatedFlashDeals
-                    )
                 }
             }
 
@@ -165,8 +173,13 @@ class HomeViewModel @Inject constructor(
                 showToast("Store Official Collection")
             }
 
-            HomeAction.OnProfileClick -> {
+            HomeAction.OnProfileClick,
+            HomeAction.OnWishlistClick -> {
                 // Handled in navigation host
+            }
+
+            HomeAction.OnClearSearch -> {
+                _uiState.update { it.copy(searchQuery = "") }
             }
         }
     }

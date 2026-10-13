@@ -46,6 +46,16 @@ class ProductDetailViewModel @Inject constructor(
 
     init {
         loadProductDetail(productId)
+        observeCartCount()
+    }
+
+    private fun observeCartCount() {
+        viewModelScope.launch {
+            firestoreRepository.getUserCartItems(userId).collect { items ->
+                val count = items.sumOf { it.quantity }
+                _uiState.update { it.copy(cartItemCount = count) }
+            }
+        }
     }
 
     private fun loadProductDetail(productId: String) {
@@ -77,11 +87,33 @@ class ProductDetailViewModel @Inject constructor(
 
             is ProductDetailAction.OnToggleFavorite -> {
                 viewModelScope.launch {
-                    val newFav = !_uiState.value.isFavorite
-                    firestoreRepository.updateProduct(productId, mapOf("isFavorite" to newFav))
-                    _uiState.update { it.copy(isFavorite = newFav) }
-                    val msg = if (newFav) "Added to Wishlist" else "Removed from Wishlist"
-                    showToast(msg)
+                    val detail = _uiState.value.productDetail
+                    if (detail != null) {
+                        val firestoreProd = com.dhruva.auratech.data.firestore.FirestoreProduct(
+                            id = detail.id,
+                            title = detail.title,
+                            originalPrice = detail.originalPrice,
+                            currentPrice = detail.currentPrice,
+                            discountPercent = detail.discountPercent,
+                            rating = detail.rating,
+                            reviewCount = detail.reviewCount,
+                            imageResName = when (detail.galleryImages.firstOrNull()) {
+                                com.dhruva.auratech.R.drawable.product_earbuds -> "product_earbuds"
+                                com.dhruva.auratech.R.drawable.product_smartwatch -> "product_smartwatch"
+                                com.dhruva.auratech.R.drawable.product_headphones_main -> "product_headphones_main"
+                                com.dhruva.auratech.R.drawable.product_keyboard -> "product_keyboard"
+                                com.dhruva.auratech.R.drawable.product_serum -> "product_serum"
+                                com.dhruva.auratech.R.drawable.product_tumbler -> "product_tumbler"
+                                com.dhruva.auratech.R.drawable.product_lamp -> "product_lamp"
+                                com.dhruva.auratech.R.drawable.product_case_peach -> "product_case_peach"
+                                else -> "product_headphones_main"
+                            },
+                            isFavorite = !_uiState.value.isFavorite
+                        )
+                        val isAdded = firestoreRepository.toggleUserWishlistProduct(userId, firestoreProd)
+                        _uiState.update { it.copy(isFavorite = isAdded) }
+                        showToast(if (isAdded) "Added to Wishlist" else "Removed from Wishlist")
+                    }
                 }
             }
 

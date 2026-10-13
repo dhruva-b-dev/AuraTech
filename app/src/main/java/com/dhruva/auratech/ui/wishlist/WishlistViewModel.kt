@@ -30,13 +30,13 @@ class WishlistViewModel @Inject constructor(
 
     init {
         loadWishlist()
+        observeCartCount()
     }
 
     private fun loadWishlist() {
         viewModelScope.launch {
-            firestoreRepository.getAllProducts().collect { firestoreProducts ->
-                val products = firestoreProducts.map { FirestoreModelMapper.toProduct(it) }
-                val wishlist = products.filter { it.isFavorite }
+            firestoreRepository.getUserWishlist(userId).collect { firestoreProducts ->
+                val wishlist = firestoreProducts.map { FirestoreModelMapper.toProduct(it) }
                 _uiState.update {
                     it.copy(
                         wishlistProducts = wishlist,
@@ -47,15 +47,24 @@ class WishlistViewModel @Inject constructor(
         }
     }
 
+    private fun observeCartCount() {
+        viewModelScope.launch {
+            firestoreRepository.getUserCartItems(userId).collect { items ->
+                val count = items.sumOf { it.quantity }
+                _uiState.update { it.copy(cartItemCount = count) }
+            }
+        }
+    }
+
     fun onAction(action: WishlistAction) {
         when (action) {
             is WishlistAction.OnToggleFavorite -> {
                 viewModelScope.launch {
                     val product = _uiState.value.wishlistProducts.find { it.id == action.productId }
                     if (product != null) {
-                        val newFav = !product.isFavorite
-                        firestoreRepository.updateProduct(action.productId, mapOf("isFavorite" to newFav))
-                        showToast(if (newFav) "Added to Wishlist" else "Removed from Wishlist")
+                        val firestoreProduct = FirestoreModelMapper.toFirestoreProduct(product)
+                        val added = firestoreRepository.toggleUserWishlistProduct(userId, firestoreProduct)
+                        showToast(if (added) "Added to Wishlist" else "Removed from Wishlist")
                     }
                 }
             }

@@ -18,7 +18,10 @@ data class ProfileUiState(
     val showEditProfileDialog: Boolean = false,
     val editNameInput: String = "",
     val editPhoneInput: String = "",
-    val showCouponsDialog: Boolean = false
+    val showCouponsDialog: Boolean = false,
+    val showSupportDialog: Boolean = false,
+    val showSettingsDialog: Boolean = false,
+    val showMessagesDialog: Boolean = false
 )
 
 sealed interface ProfileAction {
@@ -35,6 +38,12 @@ sealed interface ProfileAction {
     data class OnEditNameChanged(val name: String) : ProfileAction
     data class OnEditPhoneChanged(val phone: String) : ProfileAction
     data object OnSaveProfile : ProfileAction
+    data object OnOpenSupport : ProfileAction
+    data object OnDismissSupport : ProfileAction
+    data object OnOpenSettings : ProfileAction
+    data object OnDismissSettings : ProfileAction
+    data object OnOpenMessages : ProfileAction
+    data object OnDismissMessages : ProfileAction
     data object OnNotificationsClick : ProfileAction
     data object OnLogoutClick : ProfileAction
     data class OnTabSelected(val tab: BottomNavTab) : ProfileAction

@@ -117,14 +117,6 @@ class CartViewModel @Inject constructor(
             is CartAction.OnProceedToCheckout -> {
                 if (_uiState.value.items.isEmpty()) {
                     showToast("Your cart is empty!")
-                    return
-                }
-                _uiState.update { it.copy(isCheckingOut = true) }
-                checkoutJob?.cancel()
-                checkoutJob = viewModelScope.launch {
-                    delay(1200)
-                    _uiState.update { it.copy(isCheckingOut = false) }
-                    showToast("Order placed successfully! Thank you.")
                 }
             }
 

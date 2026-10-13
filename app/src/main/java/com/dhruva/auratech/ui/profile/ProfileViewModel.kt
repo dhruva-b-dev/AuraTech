@@ -100,9 +100,20 @@ class ProfileViewModel @Inject constructor(
             }
 
             is ProfileAction.OnMenuItemClick -> {
-                val item = _uiState.value.menuItems.find { it.id == action.itemId }
-                showToast("Opened ${item?.title ?: "Menu"}")
+                when (action.itemId) {
+                    "support" -> _uiState.update { it.copy(showSupportDialog = true) }
+                    "settings" -> _uiState.update { it.copy(showSettingsDialog = true) }
+                    "messages" -> _uiState.update { it.copy(showMessagesDialog = true) }
+                    else -> {}
+                }
             }
+
+            is ProfileAction.OnOpenSupport -> _uiState.update { it.copy(showSupportDialog = true) }
+            is ProfileAction.OnDismissSupport -> _uiState.update { it.copy(showSupportDialog = false) }
+            is ProfileAction.OnOpenSettings -> _uiState.update { it.copy(showSettingsDialog = true) }
+            is ProfileAction.OnDismissSettings -> _uiState.update { it.copy(showSettingsDialog = false) }
+            is ProfileAction.OnOpenMessages -> _uiState.update { it.copy(showMessagesDialog = true) }
+            is ProfileAction.OnDismissMessages -> _uiState.update { it.copy(showMessagesDialog = false) }
 
             is ProfileAction.OnEditProfileClick -> {
                 val profile = _uiState.value.userProfile

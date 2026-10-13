@@ -84,6 +84,7 @@ import com.dhruva.auratech.ui.theme.TextGray
 @Composable
 fun CategoriesTopBar(
     onNotificationsClick: () -> Unit,
+    onProfileClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -144,6 +145,7 @@ fun CategoriesTopBar(
                         .size(32.dp)
                         .clip(CircleShape)
                         .border(1.dp, Color(0xFF282C3F), CircleShape)
+                        .clickable { onProfileClick() }
                 )
             }
         }
@@ -343,6 +345,9 @@ fun CategoryVerticalRail(
 @Composable
 fun CategoryHeroPromoCard(
     category: CategoryCollection,
+    selectedSubcategoryId: String? = null,
+    onSubcategorySelected: (String) -> Unit = {},
+    onCertificationClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -371,6 +376,8 @@ fun CategoryHeroPromoCard(
                 rowSubcats.forEach { subCat ->
                     SubcategoryGridCard(
                         subCategory = subCat,
+                        isSelected = subCat.id == selectedSubcategoryId,
+                        onClick = { onSubcategorySelected(subCat.id) },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -386,7 +393,8 @@ fun CategoryHeroPromoCard(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, Color(0xFF282B3C), RoundedCornerShape(16.dp)),
+                .border(1.dp, Color(0xFF282B3C), RoundedCornerShape(16.dp))
+                .clickable { onCertificationClick() },
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
                 containerColor = CardBackground
@@ -447,14 +455,21 @@ fun CategoryHeroPromoCard(
 @Composable
 private fun SubcategoryGridCard(
     subCategory: SubCategory,
+    isSelected: Boolean = false,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
-            .border(1.dp, Color(0xFF282B3C), RoundedCornerShape(16.dp)),
+            .border(
+                width = if (isSelected) 2.dp else 1.dp,
+                color = if (isSelected) CyanAccent else Color(0xFF282B3C),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = CardBackground
+            containerColor = if (isSelected) Color(0xFF132A2B) else CardBackground
         )
     ) {
         Column(

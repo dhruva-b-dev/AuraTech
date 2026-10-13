@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.dhruva.auratech.R
 import com.dhruva.auratech.model.CategoryCollection
 import com.dhruva.auratech.model.Product
@@ -48,12 +49,15 @@ fun CategoriesScreen(
     onAction: (CategoriesAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isSearching = uiState.searchQuery.isNotBlank()
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = DarkBackground,
         topBar = {
             CategoriesTopBar(
-                onNotificationsClick = { onAction(CategoriesAction.OnNotificationsClick) }
+                onNotificationsClick = { onAction(CategoriesAction.OnNotificationsClick) },
+                onProfileClick = { onAction(CategoriesAction.OnProfileClick) }
             )
         },
         bottomBar = {
@@ -81,92 +85,150 @@ fun CategoriesScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Split Layout: Vertical Rail + Content Area
-                Row(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    // Left Vertical Rail
-                    CategoryVerticalRail(
-                        categories = uiState.categories,
-                        selectedCategoryId = uiState.selectedCategoryId,
-                        onCategorySelected = { categoryId ->
-                            onAction(CategoriesAction.OnSelectCategory(categoryId))
-                        }
-                    )
-
-                    // Right Main Content Panel
+                if (isSearching) {
+                    // Full-Width Search View when active searching
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 12.dp)
+                            .padding(horizontal = 16.dp)
                             .verticalScroll(rememberScrollState())
                     ) {
-                        uiState.currentCategory?.let { currentCat ->
-                            // Subcategories Grid / Featured Sector Card
-                            CategoryHeroPromoCard(category = currentCat)
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            // Subcategory Chips Row
-                            if (currentCat.subcategories.isNotEmpty()) {
-                                SubcategoryChipsRow(
-                                    subcategories = currentCat.subcategories,
-                                    selectedSubcategoryId = uiState.selectedSubcategoryId,
-                                    onSubcategorySelected = { subCatId ->
-                                        onAction(CategoriesAction.OnSelectSubcategory(subCatId))
+                        val productsToDisplay = uiState.filteredProducts
+                        if (productsToDisplay.isEmpty()) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth().height(300.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    androidx.compose.material3.Text("No products found", color = androidx.compose.ui.graphics.Color.White, fontSize = 16.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    androidx.compose.material3.OutlinedButton(onClick = { onAction(CategoriesAction.OnClearSearch) }) {
+                                        androidx.compose.material3.Text("Clear Search", color = com.dhruva.auratech.ui.theme.CyanAccent)
                                     }
-                                )
-
-                                Spacer(modifier = Modifier.height(16.dp))
+                                }
                             }
-
-                            // Filtered Product Grid
-                            val productsToDisplay = uiState.filteredProducts
-                            if (productsToDisplay.isNotEmpty()) {
-                                val rows = productsToDisplay.chunked(2)
-                                rows.forEach { rowProducts ->
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(bottom = 12.dp),
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                    ) {
-                                        rowProducts.forEach { product ->
-                                            CategoryProductCard(
-                                                product = product,
-                                                onProductClick = { id ->
-                                                    onAction(
-                                                        CategoriesAction.OnProductClick(
-                                                            id
-                                                        )
-                                                    )
-                                                },
-                                                onAddToCart = { prod ->
-                                                    onAction(
-                                                        CategoriesAction.OnAddToCart(
-                                                            prod
-                                                        )
-                                                    )
-                                                },
-                                                onToggleFavorite = { id ->
-                                                    onAction(
-                                                        CategoriesAction.OnToggleFavorite(
-                                                            id
-                                                        )
-                                                    )
-                                                },
-                                                modifier = Modifier.weight(1f)
-                                            )
-                                        }
-                                        if (rowProducts.size == 1) {
-                                            Spacer(modifier = Modifier.weight(1f))
-                                        }
+                        } else {
+                            val rows = productsToDisplay.chunked(2)
+                            rows.forEach { rowProducts ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 12.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    rowProducts.forEach { product ->
+                                        CategoryProductCard(
+                                            product = product,
+                                            onProductClick = { id -> onAction(CategoriesAction.OnProductClick(id)) },
+                                            onAddToCart = { prod -> onAction(CategoriesAction.OnAddToCart(prod)) },
+                                            onToggleFavorite = { id -> onAction(CategoriesAction.OnToggleFavorite(id)) },
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    }
+                                    if (rowProducts.size == 1) {
+                                        Spacer(modifier = Modifier.weight(1f))
                                     }
                                 }
                             }
                         }
+                    }
+                } else {
+                    // Split Layout: Vertical Rail + Content Area
+                    Row(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        // Left Vertical Rail
+                        CategoryVerticalRail(
+                            categories = uiState.categories,
+                            selectedCategoryId = uiState.selectedCategoryId,
+                            onCategorySelected = { categoryId ->
+                                onAction(CategoriesAction.OnSelectCategory(categoryId))
+                            }
+                        )
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                        // Right Main Content Panel
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 12.dp)
+                                .verticalScroll(rememberScrollState())
+                        ) {
+                            uiState.currentCategory?.let { currentCat ->
+                                // Subcategories Grid / Featured Sector Card
+                                CategoryHeroPromoCard(
+                                    category = currentCat,
+                                    selectedSubcategoryId = uiState.selectedSubcategoryId,
+                                    onSubcategorySelected = { subCatId ->
+                                        onAction(CategoriesAction.OnSelectSubcategory(subCatId))
+                                    },
+                                    onCertificationClick = {
+                                        onAction(CategoriesAction.OnCertificationClick)
+                                    }
+                                )
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Subcategory Chips Row
+                                if (currentCat.subcategories.isNotEmpty()) {
+                                    SubcategoryChipsRow(
+                                        subcategories = currentCat.subcategories,
+                                        selectedSubcategoryId = uiState.selectedSubcategoryId,
+                                        onSubcategorySelected = { subCatId ->
+                                            onAction(CategoriesAction.OnSelectSubcategory(subCatId))
+                                        }
+                                    )
+
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                }
+
+                                // Filtered Product Grid
+                                val productsToDisplay = uiState.filteredProducts
+                                if (productsToDisplay.isNotEmpty()) {
+                                    val rows = productsToDisplay.chunked(2)
+                                    rows.forEach { rowProducts ->
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(bottom = 12.dp),
+                                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                        ) {
+                                            rowProducts.forEach { product ->
+                                                CategoryProductCard(
+                                                    product = product,
+                                                    onProductClick = { id ->
+                                                        onAction(
+                                                            CategoriesAction.OnProductClick(
+                                                                id
+                                                            )
+                                                        )
+                                                    },
+                                                    onAddToCart = { prod ->
+                                                        onAction(
+                                                            CategoriesAction.OnAddToCart(
+                                                                prod
+                                                            )
+                                                        )
+                                                    },
+                                                    onToggleFavorite = { id ->
+                                                        onAction(
+                                                            CategoriesAction.OnToggleFavorite(
+                                                                id
+                                                            )
+                                                        )
+                                                    },
+                                                    modifier = Modifier.weight(1f)
+                                                )
+                                            }
+                                            if (rowProducts.size == 1) {
+                                                Spacer(modifier = Modifier.weight(1f))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
                     }
                 }
             }

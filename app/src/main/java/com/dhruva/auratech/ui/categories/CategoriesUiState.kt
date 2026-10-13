@@ -40,6 +40,8 @@ sealed interface CategoriesAction {
     data class OnAddToCart(val product: Product) : CategoriesAction
     data class OnToggleFavorite(val productId: String) : CategoriesAction
     data object OnNotificationsClick : CategoriesAction
+    data object OnProfileClick : CategoriesAction
+    data object OnCertificationClick : CategoriesAction
     data class OnTabSelected(val tab: BottomNavTab) : CategoriesAction
     data object OnDismissToast : CategoriesAction
 }

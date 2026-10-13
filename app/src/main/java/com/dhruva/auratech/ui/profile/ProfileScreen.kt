@@ -132,6 +132,18 @@ fun ProfileScreen(
             if (uiState.showCouponsDialog) {
                 CouponsDialog(onDismiss = { onAction(ProfileAction.OnDismissCoupons) })
             }
+
+            if (uiState.showSupportDialog) {
+                SupportDialog(onDismiss = { onAction(ProfileAction.OnDismissSupport) })
+            }
+
+            if (uiState.showSettingsDialog) {
+                SettingsDialog(onDismiss = { onAction(ProfileAction.OnDismissSettings) })
+            }
+
+            if (uiState.showMessagesDialog) {
+                MessagesDialog(onDismiss = { onAction(ProfileAction.OnDismissMessages) })
+            }
         }
     }
 }
@@ -217,6 +229,95 @@ fun CouponItem(code: String, desc: String) {
             Text(text = desc, color = TextGray, fontSize = 12.sp)
         }
     }
+}
+
+@Composable
+fun SupportDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = CardBackground,
+        title = { Text("Customer Support 24/7", color = Color.White, fontWeight = FontWeight.Bold) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Need assistance with your orders or account?", color = TextGray, fontSize = 13.sp)
+                Spacer(modifier = Modifier.height(4.dp))
+                Surface(shape = RoundedCornerShape(8.dp), color = CodeBg, modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        Text("Email Support", color = CyanAccent, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        Text("support@auratech.com", color = Color.White, fontSize = 13.sp)
+                    }
+                }
+                Surface(shape = RoundedCornerShape(8.dp), color = CodeBg, modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        Text("Toll-Free Phone", color = CyanAccent, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        Text("+1 (800) 555-AURA", color = Color.White, fontSize = 13.sp)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Primary)) {
+                Text("Close", color = Color.Black)
+            }
+        }
+    )
+}
+
+@Composable
+fun SettingsDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = CardBackground,
+        title = { Text("Account & Privacy", color = Color.White, fontWeight = FontWeight.Bold) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text("Push Notifications", color = Color.White)
+                    Switch(checked = true, onCheckedChange = {}, colors = SwitchDefaults.colors(checkedThumbColor = Color.Black, checkedTrackColor = Primary))
+                }
+                HorizontalDivider(color = Color(0xFF282B3C))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text("Biometric Authentication", color = Color.White)
+                    Switch(checked = false, onCheckedChange = {}, colors = SwitchDefaults.colors(checkedThumbColor = Color.Black, checkedTrackColor = Primary))
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Primary)) {
+                Text("Done", color = Color.Black)
+            }
+        }
+    )
+}
+
+@Composable
+fun MessagesDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = CardBackground,
+        title = { Text("Messages & Alerts", color = Color.White, fontWeight = FontWeight.Bold) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Surface(shape = RoundedCornerShape(8.dp), color = CodeBg, modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        Text("Welcome to Aura Tech!", color = CyanAccent, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                        Text("Use code FALL1403 for $10 off your first order.", color = TextGray, fontSize = 12.sp)
+                    }
+                }
+                Surface(shape = RoundedCornerShape(8.dp), color = CodeBg, modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        Text("Order Shipment Alert", color = Primary, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                        Text("Order #449102 is out for delivery.", color = TextGray, fontSize = 12.sp)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Primary)) {
+                Text("Close", color = Color.Black)
+            }
+        }
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.S)

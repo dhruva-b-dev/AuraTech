@@ -51,11 +51,13 @@ object AppScreenRoutes {
     const val CART_SCREEN = "store/cart"
     const val PROFILE_SCREEN = "store/profile"
     const val ADDRESSES_SCREEN = "store/addresses"
-    const val CHECKOUT_SCREEN = "store/checkout"
+    const val CHECKOUT_SCREEN = "store/checkout?couponCode={couponCode}&couponDiscount={couponDiscount}"
     const val ORDERS_SCREEN = "store/orders"
     const val WISHLIST_SCREEN = "store/wishlist"
 
     fun productDetailScreen(productId: String): String = "store/product/$productId"
+    fun checkoutScreen(couponCode: String? = null, couponDiscount: Double = 0.0): String =
+        "store/checkout?couponCode=${couponCode ?: ""}&couponDiscount=$couponDiscount"
 }
 
 @Composable
@@ -123,6 +125,22 @@ fun AppNavHost(
 
                         HomeAction.OnProfileClick -> {
                             navController.navigate(AppScreenRoutes.PROFILE_SCREEN) {
+                                popUpTo(AppScreenRoutes.HOME_SCREEN) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+
+                        HomeAction.OnWishlistClick -> {
+                            navController.navigate(AppScreenRoutes.WISHLIST_SCREEN) {
+                                popUpTo(AppScreenRoutes.HOME_SCREEN) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+
+                        is HomeAction.OnCategorySelected -> {
+                            navController.navigate(AppScreenRoutes.CATEGORIES_SCREEN) {
                                 popUpTo(AppScreenRoutes.HOME_SCREEN) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
@@ -234,7 +252,7 @@ fun AppNavHost(
 
                         is CartAction.OnProceedToCheckout -> {
                             if (uiState.items.isNotEmpty()) {
-                                navController.navigate(AppScreenRoutes.CHECKOUT_SCREEN)
+                                navController.navigate(AppScreenRoutes.checkoutScreen(uiState.appliedCoupon, uiState.couponDiscount))
                             } else {
                                 cartViewModel.onAction(action)
                             }
@@ -248,7 +266,21 @@ fun AppNavHost(
         }
 
         //Checkout Screen
-        composable(AppScreenRoutes.CHECKOUT_SCREEN) {
+        composable(
+            route = AppScreenRoutes.CHECKOUT_SCREEN,
+            arguments = listOf(
+                navArgument("couponCode") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = ""
+                },
+                navArgument("couponDiscount") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = "0.0"
+                }
+            )
+        ) {
             val checkoutViewModel: CheckoutViewModel = hiltViewModel()
             val uiState by checkoutViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -292,6 +324,14 @@ fun AppNavHost(
                                 "orders" -> navController.navigate(AppScreenRoutes.ORDERS_SCREEN)
                                 "wishlist" -> navController.navigate(AppScreenRoutes.WISHLIST_SCREEN)
                                 else -> profileViewModel.onAction(action)
+                            }
+                        }
+
+                        is ProfileAction.OnLogoutClick -> {
+                            com.google.firebase.auth.FirebaseAuth.getInstance().signOut()
+                            navController.navigate(AppScreenRoutes.AUTH_SCREEN) {
+                                popUpTo(0) { inclusive = true }
+                                launchSingleTop = true
                             }
                         }
 

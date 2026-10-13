@@ -32,6 +32,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DeveloperBoard
 import androidx.compose.material.icons.filled.ElectricBolt
 import androidx.compose.material.icons.filled.Favorite
@@ -112,7 +113,7 @@ import com.dhruva.auratech.ui.theme.TimerBoxBg
 fun HomeTopBar(
     onProfileClick: () -> Unit = {},
     onNotificationsClick: () -> Unit = {},
-    onBrandBagClick: () -> Unit = {},
+    onWishlistClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -150,7 +151,7 @@ fun HomeTopBar(
             )
         }
 
-        // Right: Notification Bell & Brand Shopping Bag
+        // Right: Notification Bell & Wishlist Shortcut
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -168,12 +169,12 @@ fun HomeTopBar(
             }
 
             IconButton(
-                onClick = onBrandBagClick,
+                onClick = onWishlistClick,
                 modifier = Modifier.size(40.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.ShoppingBag,
-                    contentDescription = "Brand Bag",
+                    imageVector = Icons.Outlined.FavoriteBorder,
+                    contentDescription = "Wishlist",
                     tint = Primary,
                     modifier = Modifier.size(24.dp)
                 )
@@ -188,7 +189,7 @@ fun HomeTopBar(
 fun SearchAndFilter(
     query: String = "",
     onQueryChanged: (String) -> Unit = {},
-    onScanBarcodeClick: () -> Unit = {},
+    onClearSearch: () -> Unit = {},
     onFilterClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -238,13 +239,15 @@ fun SearchAndFilter(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(end = 4.dp)
             ) {
-                IconButton(onClick = onScanBarcodeClick) {
-                    Icon(
-                        imageVector = Icons.Outlined.QrCodeScanner,
-                        contentDescription = "Scan Barcode",
-                        tint = TextGray,
-                        modifier = Modifier.size(20.dp)
-                    )
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = onClearSearch) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Clear Search",
+                            tint = TextGray,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
 
                 FilledIconButton(
@@ -946,6 +949,7 @@ fun FlashDealCard(
 @Composable
 fun EditorialBannersSection(
     banners: List<EditorialBanner>,
+    onBannerClick: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -955,7 +959,10 @@ fun EditorialBannersSection(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         banners.forEach { banner ->
-            EditorialBannerCard(banner = banner)
+            EditorialBannerCard(
+                banner = banner,
+                onClick = { onBannerClick(banner.id) }
+            )
         }
     }
 }
@@ -963,12 +970,14 @@ fun EditorialBannersSection(
 @Composable
 fun EditorialBannerCard(
     banner: EditorialBanner,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .border(1.dp, Color(0xFF282B3C), RoundedCornerShape(20.dp)),
+            .border(1.dp, Color(0xFF282B3C), RoundedCornerShape(20.dp))
+            .clickable { onClick() },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = CardBackground

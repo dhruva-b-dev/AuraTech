@@ -34,6 +34,7 @@ fun HomeScreen(
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isSearching = uiState.searchQuery.isNotBlank()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -42,7 +43,7 @@ fun HomeScreen(
             HomeTopBar(
                 onProfileClick = { onAction(HomeAction.OnProfileClick) },
                 onNotificationsClick = { onAction(HomeAction.OnNotificationsClick) },
-                onBrandBagClick = { onAction(HomeAction.OnBrandBagClick) }
+                onWishlistClick = { onAction(HomeAction.OnWishlistClick) }
             )
         },
         bottomBar = {
@@ -68,51 +69,68 @@ fun HomeScreen(
                 SearchAndFilter(
                     query = uiState.searchQuery,
                     onQueryChanged = { onAction(HomeAction.OnSearchQueryChanged(it)) },
-                    onScanBarcodeClick = { onAction(HomeAction.OnScanBarcodeClick) },
+                    onClearSearch = { onAction(HomeAction.OnClearSearch) },
                     onFilterClick = { onAction(HomeAction.OnFilterClick) },
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
 
-                // Trust Badges
-                TrustBadgesBlocks(badges = uiState.trustBadges)
-
-                // Promo Banner
-                if (uiState.heroBanner != null) {
-                    PromoBanner(
-                        banner = uiState.heroBanner,
-                        hours = uiState.countdownHours,
-                        minutes = uiState.countdownMinutes,
-                        seconds = uiState.countdownSeconds,
-                        onShopNowClick = { onAction(HomeAction.OnBannerShopNowClick) }
+                if (isSearching) {
+                    // Dedicated Search Results View right below search bar
+                    val searchResults = (uiState.filteredFlashDeals + uiState.filteredBestSellers).distinctBy { it.id }
+                    BestSellersSection(
+                        products = searchResults,
+                        onToggleFavorite = { onAction(HomeAction.OnToggleFavorite(it)) },
+                        onAddToCart = { onAction(HomeAction.OnAddToCart(it)) },
+                        onProductClick = { onAction(HomeAction.OnProductClick(it)) },
+                        onFilterSortClick = { onAction(HomeAction.OnFilterClick) }
                     )
+                } else {
+                    // Standard Home Screen Flow
+
+                    // 1. Promo Banner
+                    if (uiState.heroBanner != null) {
+                        PromoBanner(
+                            banner = uiState.heroBanner,
+                            hours = uiState.countdownHours,
+                            minutes = uiState.countdownMinutes,
+                            seconds = uiState.countdownSeconds,
+                            onShopNowClick = { onAction(HomeAction.OnBannerShopNowClick) }
+                        )
+                    }
+
+                    // 2. Hardware Sectors / Categories
+                    FeaturedCategoriesSection(
+                        categories = uiState.categories,
+                        selectedCategoryId = uiState.selectedCategoryId,
+                        onCategoryClick = { onAction(HomeAction.OnCategorySelected(it)) },
+                        onViewAllClick = { onAction(HomeAction.OnViewAllCategoriesClick) }
+                    )
+
+                    // 3. Flash Deals / Allocations
+                    FlashDealsSection(
+                        deals = uiState.filteredFlashDeals,
+                        onProductClick = { onAction(HomeAction.OnProductClick(it)) },
+                        onViewAllClick = { onAction(HomeAction.OnViewAllFlashDealsClick) }
+                    )
+
+                    // 4. Best Sellers
+                    BestSellersSection(
+                        products = uiState.filteredBestSellers,
+                        onToggleFavorite = { onAction(HomeAction.OnToggleFavorite(it)) },
+                        onAddToCart = { onAction(HomeAction.OnAddToCart(it)) },
+                        onProductClick = { onAction(HomeAction.OnProductClick(it)) },
+                        onFilterSortClick = { onAction(HomeAction.OnFilterClick) }
+                    )
+
+                    // 5. Editorial Banners
+                    EditorialBannersSection(
+                        banners = uiState.editorialBanners,
+                        onBannerClick = { onAction(HomeAction.OnViewAllCategoriesClick) }
+                    )
+
+                    // 6. Trust Guarantees at bottom
+                    TrustBadgesBlocks(badges = uiState.trustBadges)
                 }
-
-                // Hardware Sectors / Categories
-                FeaturedCategoriesSection(
-                    categories = uiState.categories,
-                    selectedCategoryId = uiState.selectedCategoryId,
-                    onCategoryClick = { onAction(HomeAction.OnCategorySelected(it)) },
-                    onViewAllClick = { onAction(HomeAction.OnViewAllCategoriesClick) }
-                )
-
-                // Flash Deals / Allocations
-                FlashDealsSection(
-                    deals = uiState.filteredFlashDeals,
-                    onProductClick = { onAction(HomeAction.OnProductClick(it)) },
-                    onViewAllClick = { onAction(HomeAction.OnViewAllFlashDealsClick) }
-                )
-
-                // Editorial Banners
-                EditorialBannersSection(banners = uiState.editorialBanners)
-
-                // Best Sellers
-                BestSellersSection(
-                    products = uiState.filteredBestSellers,
-                    onToggleFavorite = { onAction(HomeAction.OnToggleFavorite(it)) },
-                    onAddToCart = { onAction(HomeAction.OnAddToCart(it)) },
-                    onProductClick = { onAction(HomeAction.OnProductClick(it)) },
-                    onFilterSortClick = { onAction(HomeAction.OnFilterClick) }
-                )
             }
 
             // Toast feedback

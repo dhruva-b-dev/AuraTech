@@ -39,6 +39,7 @@ data class HomeUiState(
 
 sealed interface HomeAction {
     data class OnSearchQueryChanged(val query: String) : HomeAction
+    data object OnClearSearch : HomeAction
     data class OnCategorySelected(val categoryId: String) : HomeAction
     data class OnToggleFavorite(val productId: String) : HomeAction
     data class OnAddToCart(val product: Product) : HomeAction
@@ -53,4 +54,5 @@ sealed interface HomeAction {
     data object OnNotificationsClick : HomeAction
     data object OnBrandBagClick : HomeAction
     data object OnProfileClick : HomeAction
+    data object OnWishlistClick : HomeAction
 }

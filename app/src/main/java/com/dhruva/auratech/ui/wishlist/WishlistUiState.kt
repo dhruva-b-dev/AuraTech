@@ -4,6 +4,7 @@ import com.dhruva.auratech.model.Product
 
 data class WishlistUiState(
     val wishlistProducts: List<Product> = emptyList(),
+    val cartItemCount: Int = 2,
     val isLoading: Boolean = true,
     val toastMessage: String? = null
 )

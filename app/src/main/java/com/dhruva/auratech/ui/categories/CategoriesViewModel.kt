@@ -36,6 +36,16 @@ class CategoriesViewModel @Inject constructor(
 
     init {
         loadFirestoreData()
+        observeCartCount()
+    }
+
+    private fun observeCartCount() {
+        viewModelScope.launch {
+            firestoreRepository.getUserCartItems(userId).collect { items ->
+                val count = items.sumOf { it.quantity }
+                _uiState.update { it.copy(cartItemCount = count) }
+            }
+        }
     }
 
     private fun loadFirestoreData() {
@@ -71,9 +81,13 @@ class CategoriesViewModel @Inject constructor(
             }
 
             is CategoriesAction.OnSelectSubcategory -> {
+                val newSubId = if (_uiState.value.selectedSubcategoryId == action.subcategoryId) null else action.subcategoryId
                 _uiState.update {
-                    it.copy(selectedSubcategoryId = action.subcategoryId)
+                    it.copy(selectedSubcategoryId = newSubId)
                 }
+                val activeSub = _uiState.value.currentCategory?.subcategories?.find { it.id == newSubId }
+                val msg = if (activeSub != null) "Filtered: ${activeSub.name}" else "Showing all ${uiState.value.currentCategory?.name ?: "items"}"
+                showToast(msg)
             }
 
             is CategoriesAction.OnSearchQueryChanged -> {
@@ -121,23 +135,36 @@ class CategoriesViewModel @Inject constructor(
             }
 
             is CategoriesAction.OnToggleFavorite -> {
-                _uiState.update { state ->
-                    val updatedCategories = state.categories.map { category ->
-                        val updatedProducts = category.products.map { product ->
-                            if (product.id == action.productId) {
-                                product.copy(isFavorite = !product.isFavorite)
-                            } else {
-                                product
+                viewModelScope.launch {
+                    val allProds = _uiState.value.categories.flatMap { it.products }
+                    val targetProd = allProds.find { it.id == action.productId }
+                    if (targetProd != null) {
+                        val firestoreProd = FirestoreModelMapper.toFirestoreProduct(targetProd)
+                        val isAdded = firestoreRepository.toggleUserWishlistProduct(userId, firestoreProd)
+                        _uiState.update { state ->
+                            val updatedCategories = state.categories.map { category ->
+                                val updatedProducts = category.products.map { product ->
+                                    if (product.id == action.productId) {
+                                        product.copy(isFavorite = isAdded)
+                                    } else {
+                                        product
+                                    }
+                                }
+                                category.copy(products = updatedProducts)
                             }
+                            state.copy(categories = updatedCategories)
                         }
-                        category.copy(products = updatedProducts)
+                        showToast(if (isAdded) "Added to Wishlist" else "Removed from Wishlist")
                     }
-                    state.copy(categories = updatedCategories)
                 }
             }
 
             is CategoriesAction.OnNotificationsClick -> {
                 showToast("No new category updates")
+            }
+
+            is CategoriesAction.OnCertificationClick -> {
+                showToast("Lossless Audio: Certified Hi-Res 96kHz/24bit")
             }
 
             is CategoriesAction.OnTabSelected -> {
